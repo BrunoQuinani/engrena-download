@@ -37,9 +37,10 @@
     <section class="card">
       <h2>Baixar</h2>
       <p>
-        <a id="baixar" class="botao" aria-disabled="true" href="#">Baixar para Windows</a>
+        <a id="baixar" class="botao" aria-disabled="true" href="#">Baixar instalador para Windows</a>
         <span id="versao" class="versao"></span>
       </p>
+      <p class="nota">Prefere sem instalar? <a id="portatil" href="#">Baixe a versão portátil (.zip)</a>.</p>
       <p id="notas" class="nota"></p>
       <p id="erro" class="nota" hidden>Não foi possível consultar a versão mais recente. Tente novamente em instantes.</p>
     </section>
@@ -47,8 +48,9 @@
     <section class="card">
       <h2>Como instalar</h2>
       <ol>
-        <li>Baixe o arquivo <code>.zip</code> e extraia em uma pasta do seu usuário, por exemplo <code>C:\Users\seu-nome\SIMAP</code>. <strong>Não use</strong> a pasta Arquivos de Programas.</li>
-        <li>Abra <code>simap_app.exe</code>. Se o Windows mostrar “O Windows protegeu o computador”, clique em <em>Mais informações</em> e depois em <em>Executar assim mesmo</em>.</li>
+        <li>Baixe e abra o <code>SIMAP-Setup.exe</code>. Se o Windows mostrar “O Windows protegeu o computador”, clique em <em>Mais informações</em> e depois em <em>Executar assim mesmo</em>.</li>
+        <li>Avance no assistente. Não é preciso ser administrador: o SIMAP é instalado só para o seu usuário, com atalho na Área de Trabalho e no menu Iniciar.</li>
+        <li>Para desinstalar: Configurações do Windows → Aplicativos → SIMAP → Desinstalar (ou “Desinstalar SIMAP” no menu Iniciar).</li>
         <li>Entre com seu e-mail e senha. No primeiro acesso, use “solicitar acesso” e aguarde um gerente aprovar.</li>
       </ol>
       <p class="nota">Depois de instalado, o app se atualiza sozinho: ao abrir, ele avisa quando há versão nova.</p>
@@ -72,8 +74,10 @@
         if (!r.ok) throw new Error(r.status);
         const m = await r.json();
         const a = document.getElementById("baixar");
-        a.href = m.url;
+        // Versões antigas do manifesto não tinham instalador: cai no .zip.
+        a.href = m.installer || m.url;
         a.removeAttribute("aria-disabled");
+        document.getElementById("portatil").href = m.url;
         document.getElementById("versao").textContent = "versão " + m.version;
         if (m.notes) document.getElementById("notas").textContent = "Novidades: " + m.notes;
       } catch (e) {
