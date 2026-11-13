@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SIMAP - Download</title>
+  <meta name="description" content="Baixe o SIMAP, Sistema Integrado de Manutenção para Windows.">
+  <style>
+    :root { --marinho:#0c3b5e; --destaque:#0f548c; --claro:#b4d6fa; --fundo:#f2f5f8; --texto:#14212b; --card:#fff; --borda:#d6dde0; }
+    @media (prefers-color-scheme: dark) {
+      :root { --fundo:#121a22; --texto:#e8eef3; --card:#18232d; --borda:#2a3946; --claro:#7fb6e8; }
+    }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: "Segoe UI", system-ui, sans-serif; background:var(--fundo); color:var(--texto); }
+    header { background:var(--marinho); color:#fff; padding:28px 16px; }
+    header .in, main { max-width: 760px; margin: 0 auto; padding: 0 16px; }
+    h1 { margin:0 0 4px; font-size: 1.9rem; letter-spacing:.5px; }
+    header p { margin:0; color:var(--claro); }
+    main { padding-top: 24px; padding-bottom: 48px; }
+    .card { background:var(--card); border:1px solid var(--borda); border-radius:10px; padding:22px; margin-bottom:18px; }
+    .botao { display:inline-block; background:var(--destaque); color:#fff; text-decoration:none; padding:13px 26px; border-radius:6px; font-weight:600; font-size:1.05rem; }
+    .botao[aria-disabled="true"] { opacity:.5; pointer-events:none; }
+    .versao { color:var(--claro); margin-left:12px; }
+    ol { padding-left: 20px; line-height: 1.7; }
+    code { background:rgba(127,127,127,.18); padding:1px 6px; border-radius:4px; }
+    small, .nota { opacity:.75; }
+    h2 { margin-top:0; font-size:1.15rem; }
+  </style>
+</head>
+<body>
+  <header><div class="in">
+    <h1>SIMAP</h1>
+    <p>Sistema Integrado de Manutenção — aplicativo para Windows</p>
+  </div></header>
+
+  <main>
+    <section class="card">
+      <h2>Baixar</h2>
+      <p>
+        <a id="baixar" class="botao" aria-disabled="true" href="#">Baixar para Windows</a>
+        <span id="versao" class="versao"></span>
+      </p>
+      <p id="notas" class="nota"></p>
+      <p id="erro" class="nota" hidden>Não foi possível consultar a versão mais recente. Tente novamente em instantes.</p>
+    </section>
+
+    <section class="card">
+      <h2>Como instalar</h2>
+      <ol>
+        <li>Baixe o arquivo <code>.zip</code> e extraia em uma pasta do seu usuário, por exemplo <code>C:\Users\seu-nome\SIMAP</code>. <strong>Não use</strong> a pasta Arquivos de Programas.</li>
+        <li>Abra <code>simap_app.exe</code>. Se o Windows mostrar “O Windows protegeu o computador”, clique em <em>Mais informações</em> e depois em <em>Executar assim mesmo</em>.</li>
+        <li>Entre com seu e-mail e senha. No primeiro acesso, use “solicitar acesso” e aguarde um gerente aprovar.</li>
+      </ol>
+      <p class="nota">Depois de instalado, o app se atualiza sozinho: ao abrir, ele avisa quando há versão nova.</p>
+    </section>
+
+    <section class="card">
+      <h2>Esqueci minha senha</h2>
+      <p>Na tela de login do aplicativo, clique em <strong>Esqueci minha senha</strong>, informe seu e-mail e siga o link que você receberá.</p>
+    </section>
+  </main>
+
+  <script>
+    const MANIFESTO = "https://fdhkcbsazgidnmkxspwg.supabase.co/storage/v1/object/public/app-updates/latest.json";
+    (async () => {
+      try {
+        const r = await fetch(MANIFESTO + "?t=" + Date.now(), { cache: "no-store" });
+        if (!r.ok) throw new Error(r.status);
+        const m = await r.json();
+        const a = document.getElementById("baixar");
+        a.href = m.url;
+        a.removeAttribute("aria-disabled");
+        document.getElementById("versao").textContent = "versão " + m.version;
+        if (m.notes) document.getElementById("notas").textContent = "Novidades: " + m.notes;
+      } catch (e) {
+        document.getElementById("erro").hidden = false;
+      }
+    })();
+  </script>
+</body>
+</html>
