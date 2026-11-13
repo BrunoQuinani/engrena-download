@@ -61,6 +61,10 @@
   </main>
 
   <script>
+    // Link de "nova senha" enviado pelo Supabase cai aqui (Site URL): repassa para a tela de nova senha.
+    if (/type=recovery|access_token=/.test(location.hash)) {
+      location.replace("reset.html" + location.hash);
+    }
     const MANIFESTO = "https://fdhkcbsazgidnmkxspwg.supabase.co/storage/v1/object/public/app-updates/latest.json";
     (async () => {
       try {
