@@ -2,10 +2,11 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
+  <link rel="icon" type="image/png" href="favicon.png">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Engrena - Nova senha</title>
   <style>
-    :root { --marinho:#0c3b5e; --destaque:#0f548c; --fundo:#f2f5f8; --texto:#14212b; --card:#fff; --borda:#c9d3d8; }
+    :root { --marinho:#15171c; --destaque:#e8590c; --fundo:#f2f5f8; --texto:#14212b; --card:#fff; --borda:#c9d3d8; }
     @media (prefers-color-scheme: dark) { :root { --fundo:#121a22; --texto:#e8eef3; --card:#18232d; --borda:#2a3946; } }
     * { box-sizing: border-box; }
     body { margin:0; min-height:100vh; display:grid; place-items:center; font-family:"Segoe UI", system-ui, sans-serif; background:var(--fundo); color:var(--texto); padding:16px; }
@@ -21,7 +22,7 @@
 </head>
 <body>
   <div class="card">
-    <h1>Engrena</h1>
+    <img src="logo.png" alt="Engrena" style="height:56px;width:auto;display:block;margin-bottom:14px;background:#15171c;padding:12px 16px;border-radius:8px">
     <p>Defina sua nova senha.</p>
     <form id="form" hidden>
       <label for="s1">Nova senha (mínimo 6 caracteres)</label>
