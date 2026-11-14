@@ -3,155 +3,395 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Engrena — Sistema de gestão e manutenção</title>
-<meta name="description" content="Engrena: planejamento e controle da manutenção industrial. Planos, ordens, estoque, compras e indicadores PCM no computador e no celular.">
-<meta name="theme-color" content="#0e1013">
+<title>Engrena — Gestão e planejamento da manutenção</title>
+<meta name="description" content="Engrena: planejamento e controle da manutenção industrial. Planos preventivos, ordens de serviço, estoque, compras e indicadores PCM no computador e no celular.">
+<meta name="theme-color" content="#0b0d10">
 <link rel="icon" type="image/png" href="favicon.png">
-<meta property="og:title" content="Engrena — Sistema de gestão e manutenção">
+<meta property="og:title" content="Engrena — Gestão e planejamento da manutenção">
 <meta property="og:description" content="Planos, ordens, estoque, compras e indicadores de manutenção. Para Windows e Android.">
-<meta property="og:image" content="logo.png">
+<meta property="og:image" content="https://engrena-app.pages.dev/img/hero-m.webp">
+<link rel="preload" as="image" href="img/hero.webp" media="(min-width:761px)">
+<link rel="preload" as="image" href="img/hero-m.webp" media="(max-width:760px)">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#0e1013; --bg2:#14171c; --card:#191d23; --linha:#262b33; --texto:#eef1f5; --suave:#a3acb9;
+    --bg:#0b0d10; --bg2:#111418; --card:#161a20; --linha:rgba(255,255,255,.09); --texto:#f1f3f6; --suave:#a2abb8;
     --laranja:#ff6a1a; --laranja2:#e8590c; --prata:#c9ced6; --ok:#34c759;
-    --raio:14px; --sombra:0 20px 60px rgba(0,0,0,.45);
+    --fh:"Manrope",Inter,system-ui,sans-serif; --fb:Inter,"Segoe UI",system-ui,sans-serif;
+    --ease:cubic-bezier(.2,.7,.1,1); --g:clamp(16px,4vw,56px);
   }
-  *{box-sizing:border-box} html{scroll-behavior:smooth}
-  body{margin:0;background:var(--bg);color:var(--texto);font:16px/1.6 "Segoe UI",Inter,system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
-  a{color:inherit} img{max-width:100%}
-  .wrap{max-width:1120px;margin:0 auto;padding:0 20px}
-  /* topo */
-  header.topo{position:sticky;top:0;z-index:20;background:rgba(14,16,19,.82);backdrop-filter:blur(10px);border-bottom:1px solid var(--linha)}
-  .topo .wrap{display:flex;align-items:center;gap:24px;height:64px}
+  *{box-sizing:border-box} html{scroll-behavior:smooth;scroll-padding-top:80px}
+  body{margin:0;background:var(--bg);color:var(--texto);font:16px/1.65 var(--fb);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  a{color:inherit} img{max-width:100%;display:block}
+  h1,h2,h3{font-family:var(--fh);letter-spacing:-.025em;margin:0}
+  .w{width:100%;max-width:1360px;margin:0 auto;padding:0 var(--g)}
+  .ov{display:inline-flex;align-items:center;gap:10px;color:var(--laranja);font:700 .78rem/1 var(--fb);letter-spacing:.18em;text-transform:uppercase}
+  .ov::before{content:"";width:26px;height:2px;background:currentColor}
+  .h2{font-size:clamp(2rem,4.4vw,3.6rem);line-height:1.05;margin:18px 0 18px}
+  .h2 em{font-style:normal;color:var(--laranja)}
+  .sub{color:var(--suave);font-size:clamp(1rem,1.3vw,1.15rem);max-width:38em;margin:0}
+
+  /* progresso + topo */
+  #prog{position:fixed;inset:0 0 auto 0;height:3px;z-index:60;background:linear-gradient(90deg,var(--laranja2),#ffa35c);transform-origin:0 50%;transform:scaleX(0)}
+  header.topo{position:fixed;inset:0 0 auto 0;z-index:50;transition:background .35s,border-color .35s,backdrop-filter .35s;border-bottom:1px solid transparent}
+  header.topo.solido{background:rgba(11,13,16,.78);backdrop-filter:blur(14px) saturate(1.4);border-color:var(--linha)}
+  .topo .w{display:flex;align-items:center;gap:28px;height:76px}
   .topo img.logo{height:34px;width:auto}
-  .topo nav{display:flex;gap:22px;margin-left:auto;align-items:center}
-  .topo nav a{color:var(--suave);text-decoration:none;font-size:.93rem}
-  .topo nav a:hover{color:#fff}
-  .btn{display:inline-flex;align-items:center;gap:10px;padding:13px 22px;border-radius:10px;font-weight:600;text-decoration:none;border:1px solid transparent;transition:.15s;cursor:pointer;font-size:1rem}
-  .btn.prim{background:linear-gradient(180deg,var(--laranja),var(--laranja2));color:#fff;box-shadow:0 8px 24px rgba(255,106,26,.28)}
-  .btn.prim:hover{filter:brightness(1.08);transform:translateY(-1px)}
-  .btn.sec{background:transparent;border-color:#3a414c;color:var(--texto)}
-  .btn.sec:hover{border-color:var(--prata)}
-  .btn.peq{padding:9px 16px;font-size:.9rem}
-  .btn[aria-disabled="true"]{opacity:.5;pointer-events:none}
+  .topo nav{display:flex;gap:30px;margin-left:auto;align-items:center}
+  .topo nav a{color:rgba(255,255,255,.78);text-decoration:none;font-size:.93rem;font-weight:500;position:relative}
+  .topo nav a:not(.btn)::after{content:"";position:absolute;left:0;right:0;bottom:-6px;height:2px;background:var(--laranja);transform:scaleX(0);transition:transform .3s var(--ease)}
+  .topo nav a:not(.btn):hover{color:#fff}.topo nav a:not(.btn):hover::after{transform:scaleX(1)}
+
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:15px 26px;border-radius:12px;font:600 1rem var(--fb);text-decoration:none;border:1px solid transparent;transition:transform .25s var(--ease),box-shadow .25s,background .25s,border-color .25s;cursor:pointer;position:relative;overflow:hidden}
+  .btn.prim{background:linear-gradient(180deg,var(--laranja),var(--laranja2));color:#fff;box-shadow:0 10px 30px rgba(255,106,26,.35)}
+  .btn.prim::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.35) 50%,transparent 70%);transform:translateX(-120%);transition:transform .7s var(--ease)}
+  .btn.prim:hover{transform:translateY(-2px);box-shadow:0 16px 40px rgba(255,106,26,.45)}
+  .btn.prim:hover::after{transform:translateX(120%)}
+  .btn.sec{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.22);color:#fff;backdrop-filter:blur(8px)}
+  .btn.sec:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.4);transform:translateY(-2px)}
+  .btn.peq{padding:10px 18px;font-size:.9rem;border-radius:10px}
+  .btn[aria-disabled="true"]{opacity:.55;pointer-events:none}
+  .btn svg{width:19px;height:19px;flex:none}
+
   /* hero */
-  .hero{position:relative;overflow:hidden;padding:84px 0 70px;background:
-    radial-gradient(900px 420px at 80% -10%,rgba(255,106,26,.16),transparent 60%),
-    radial-gradient(700px 380px at 0% 0%,rgba(120,140,170,.10),transparent 60%)}
-  .hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
-  .selo{display:inline-flex;gap:8px;align-items:center;font-size:.82rem;color:var(--prata);border:1px solid var(--linha);background:var(--bg2);padding:6px 12px;border-radius:99px}
-  .selo i{width:8px;height:8px;border-radius:50%;background:var(--ok);display:inline-block}
-  h1{font-size:clamp(2.1rem,4.6vw,3.5rem);line-height:1.08;margin:18px 0 16px;letter-spacing:-.02em}
-  h1 em{font-style:normal;background:linear-gradient(90deg,var(--laranja),#ffa35c);-webkit-background-clip:text;background-clip:text;color:transparent}
-  .hero p.lead{color:var(--suave);font-size:1.12rem;max-width:34em}
-  .acoes{display:flex;flex-wrap:wrap;gap:12px;margin:28px 0 14px}
-  .meta{color:var(--suave);font-size:.88rem}
-  .meta b{color:var(--prata);font-weight:600}
+  .hero{position:relative;min-height:100vh;min-height:100svh;display:flex;align-items:flex-end;overflow:hidden;isolation:isolate}
+  .hero .bg{position:absolute;inset:-6% 0 0 0;z-index:-2;background:url(img/hero.webp) center 40%/cover no-repeat;animation:kb 22s ease-out both;will-change:transform}
+  @keyframes kb{from{transform:scale(1.14)}to{transform:scale(1.02)}}
+  .hero::before{content:"";position:absolute;inset:0;z-index:-1;background:
+     linear-gradient(90deg,rgba(8,9,12,.92) 0%,rgba(8,9,12,.72) 38%,rgba(8,9,12,.15) 75%),
+     linear-gradient(0deg,var(--bg) 0%,rgba(11,13,16,0) 38%)}
+  .hero::after{content:"";position:absolute;inset:0;z-index:-1;opacity:.12;pointer-events:none;background-image:radial-gradient(rgba(255,255,255,.6) 1px,transparent 1px);background-size:3px 3px;mix-blend-mode:overlay}
+  .hero .w{padding-top:130px;padding-bottom:clamp(40px,8vh,90px)}
+  .selo{display:inline-flex;gap:9px;align-items:center;font-size:.84rem;color:#dfe3e8;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.07);backdrop-filter:blur(8px);padding:7px 14px;border-radius:99px}
+  .selo i{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 0 rgba(52,199,89,.6);animation:pulse 2s infinite}
+  @keyframes pulse{70%{box-shadow:0 0 0 9px rgba(52,199,89,0)}100%{box-shadow:0 0 0 0 rgba(52,199,89,0)}}
+  .hero h1{font-size:clamp(2.6rem,7.2vw,6.4rem);line-height:.98;margin:26px 0 24px;max-width:12.5em;font-weight:800}
+  .hero h1 .l{display:block;overflow:hidden;padding-bottom:.06em}
+  .hero h1 .l>span{display:inline-block;transform:translateY(105%);animation:sobe 1s var(--ease) forwards}
+  .hero h1 .l:nth-child(2)>span{animation-delay:.12s}.hero h1 .l:nth-child(3)>span{animation-delay:.24s}
+  .hero h1 em{font-style:normal;background:linear-gradient(90deg,var(--laranja),#ffb170);-webkit-background-clip:text;background-clip:text;color:transparent}
+  @keyframes sobe{to{transform:none}}
+  .hero .lead{font-size:clamp(1.05rem,1.5vw,1.3rem);color:#cfd5dd;max-width:36em;margin:0;opacity:0;animation:fade .9s .5s var(--ease) forwards}
+  .hero .acoes{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin:36px 0 0;opacity:0;animation:fade .9s .65s var(--ease) forwards}
+  @keyframes fade{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+  .numeros{display:grid;grid-template-columns:repeat(4,1fr);margin-top:clamp(40px,8vh,80px);border-top:1px solid rgba(255,255,255,.14);opacity:0;animation:fade .9s .85s var(--ease) forwards}
+  .numeros div{padding:22px 20px 4px 0}
+  .numeros b{display:block;font:800 clamp(1.6rem,2.6vw,2.4rem)/1 var(--fh);color:#fff}
+  .numeros span{color:var(--suave);font-size:.9rem}
+  .rolar{position:absolute;right:var(--g);bottom:clamp(40px,8vh,90px);width:26px;height:42px;border:2px solid rgba(255,255,255,.4);border-radius:14px}
+  .rolar::after{content:"";position:absolute;left:50%;top:8px;width:4px;height:8px;margin-left:-2px;border-radius:2px;background:#fff;animation:rola 1.8s infinite}
+  @keyframes rola{0%{opacity:0;transform:translateY(0)}30%{opacity:1}100%{opacity:0;transform:translateY(14px)}}
+
+  /* faixa rolante */
+  .marquee{border-block:1px solid var(--linha);background:var(--bg2);overflow:hidden;padding:22px 0;white-space:nowrap}
+  .marquee .trilho{display:inline-flex;gap:56px;animation:corre 38s linear infinite;padding-left:56px}
+  .marquee span{font:700 clamp(1.1rem,2vw,1.6rem) var(--fh);color:#5d6673;display:inline-flex;align-items:center;gap:56px}
+  .marquee span::after{content:"";width:9px;height:9px;transform:rotate(45deg);background:var(--laranja)}
+  @keyframes corre{to{transform:translateX(-50%)}}
+
+  section{position:relative}
+  .bloco{padding:clamp(80px,13vh,150px) 0}
+
+  /* escritório x campo */
+  .duo{display:grid;grid-template-columns:1fr 1fr;gap:clamp(12px,1.6vw,22px);margin-top:56px}
+  .painel{position:relative;min-height:clamp(420px,62vh,640px);border-radius:22px;overflow:hidden;isolation:isolate;display:flex;align-items:flex-end;padding:clamp(24px,3vw,44px)}
+  .painel img{position:absolute;inset:0;width:100%;height:120%;object-fit:cover;z-index:-2;transition:transform 1.2s var(--ease)}
+  .painel::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(0deg,rgba(8,9,12,.95) 8%,rgba(8,9,12,.35) 55%,rgba(8,9,12,.1))}
+  .painel:hover img{transform:scale(1.05)}
+  .painel .rot{position:absolute;top:22px;left:22px;font:600 .78rem var(--fb);letter-spacing:.14em;text-transform:uppercase;background:rgba(0,0,0,.45);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.16);padding:8px 13px;border-radius:99px}
+  .painel h3{font-size:clamp(1.6rem,2.6vw,2.4rem);line-height:1.1;margin-bottom:12px}
+  .painel p{margin:0 0 18px;color:#c8ced7;max-width:30em}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chips span{font-size:.82rem;padding:6px 12px;border-radius:99px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14)}
+
+  /* recursos (bento) */
+  .bento{display:grid;grid-template-columns:repeat(12,1fr);grid-auto-rows:minmax(230px,auto);gap:clamp(12px,1.4vw,18px);margin-top:56px}
+  .cx{position:relative;grid-column:span 4;background:var(--card);border:1px solid var(--linha);border-radius:20px;padding:30px;overflow:hidden;isolation:isolate;display:flex;flex-direction:column;justify-content:flex-end;transition:border-color .3s,transform .4s var(--ease)}
+  .cx::before{content:"";position:absolute;inset:0;z-index:-1;opacity:0;transition:opacity .3s;background:radial-gradient(420px circle at var(--mx,50%) var(--my,50%),rgba(255,106,26,.16),transparent 60%)}
+  .cx:hover{border-color:rgba(255,106,26,.35);transform:translateY(-4px)}.cx:hover::before{opacity:1}
+  .cx.f{color:#fff}.cx.f img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-3;transition:transform 1s var(--ease)}
+  .cx.f::after{content:"";position:absolute;inset:0;z-index:-2;background:linear-gradient(0deg,rgba(8,9,12,.94) 10%,rgba(8,9,12,.25) 70%)}
+  .cx.f:hover img{transform:scale(1.06)}
+  .cx.g8{grid-column:span 8}.cx.g6{grid-column:span 6}.cx.alto{grid-row:span 2}
+  .ico{width:48px;height:48px;border-radius:13px;background:rgba(255,106,26,.13);color:var(--laranja);display:grid;place-items:center;margin-bottom:auto}
+  .ico svg{width:24px;height:24px}
+  .cx h3{font-size:1.35rem;margin:22px 0 8px}
+  .cx p{margin:0;color:var(--suave);font-size:.97rem}.cx.f p{color:#cbd1d9}
+
+  /* faixa parallax */
+  .banda{position:relative;min-height:88vh;display:flex;align-items:center;overflow:hidden;isolation:isolate}
+  .banda .px{position:absolute;inset:-18% 0;z-index:-2;background-position:center;background-size:cover;will-change:transform}
+  .banda::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,var(--bg) 0%,rgba(11,13,16,.55) 22%,rgba(11,13,16,.55) 78%,var(--bg) 100%),rgba(0,0,0,.25)}
+  .banda blockquote{margin:0;font:800 clamp(2rem,5vw,4.4rem)/1.05 var(--fh);letter-spacing:-.03em;max-width:15em}
+  .banda blockquote em{font-style:normal;color:var(--laranja)}
+  .banda .sub{margin-top:24px;color:#d2d7de}
+
+  /* fluxo com rolagem fixa */
+  .fluxo{display:grid;grid-template-columns:1fr 1fr;gap:clamp(30px,6vw,100px);margin-top:40px}
+  .fixo{position:sticky;top:110px;height:calc(100vh - 150px);max-height:680px;border-radius:22px;overflow:hidden;background:var(--card);border:1px solid var(--linha)}
+  .fixo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.08);transition:opacity .8s var(--ease),transform 1.4s var(--ease)}
+  .fixo img.on{opacity:1;transform:scale(1)}
+  .fixo::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(8,9,12,.8),transparent 50%)}
+  .fixo .etq{position:absolute;left:28px;bottom:24px;z-index:2;font:800 clamp(1.4rem,2.4vw,2rem) var(--fh)}
+  .fixo .etq small{display:block;font:600 .8rem var(--fb);color:var(--laranja);letter-spacing:.16em;text-transform:uppercase;margin-bottom:6px}
+  .passos{position:relative;padding-left:46px}
+  .passos::before{content:"";position:absolute;left:15px;top:12px;bottom:12px;width:2px;background:var(--linha)}
+  .passos .linha-on{position:absolute;left:15px;top:12px;width:2px;height:0;background:linear-gradient(var(--laranja),#ffa35c);transition:height .2s linear}
+  .passo{min-height:52vh;display:flex;flex-direction:column;justify-content:center;opacity:.3;transition:opacity .5s var(--ease)}
+  .passo.on{opacity:1}
+  .passo .n{position:absolute;left:0;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:var(--bg);border:2px solid #3a414c;font:700 .85rem var(--fh);transition:background .4s,border-color .4s;margin-top:-4px}
+  .passo.on .n{background:var(--laranja2);border-color:var(--laranja2)}
+  .passo h3{font-size:clamp(1.6rem,2.8vw,2.4rem);margin-bottom:12px}
+  .passo p{color:var(--suave);margin:0;max-width:30em;font-size:1.05rem}
+
   /* mock do sistema */
-  .mock{background:var(--card);border:1px solid var(--linha);border-radius:16px;box-shadow:var(--sombra);overflow:hidden}
-  .mock .barra{display:flex;gap:6px;padding:11px 14px;background:#101318;border-bottom:1px solid var(--linha)}
-  .mock .barra i{width:10px;height:10px;border-radius:50%;background:#2a3038}
-  .mock .corpo{display:grid;grid-template-columns:120px 1fr;min-height:300px}
-  .mock .lado{background:#101318;border-right:1px solid var(--linha);padding:14px 10px;font-size:.72rem;color:var(--suave);display:flex;flex-direction:column;gap:7px}
-  .mock .lado span{padding:6px 8px;border-radius:6px}
+  .vitrine{perspective:1600px;margin-top:60px}
+  .mock{background:var(--card);border:1px solid var(--linha);border-radius:18px;box-shadow:0 40px 120px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.03);overflow:hidden;transform:rotateX(18deg) scale(.92);transform-origin:50% 0;transition:transform .1s linear;will-change:transform}
+  .mock .barra{display:flex;gap:7px;padding:13px 16px;background:#0e1115;border-bottom:1px solid var(--linha);align-items:center}
+  .mock .barra i{width:11px;height:11px;border-radius:50%;background:#2a3038}
+  .mock .barra img{height:18px;margin-left:12px}
+  .mock .corpo{display:grid;grid-template-columns:190px 1fr;min-height:420px}
+  .mock .lado{background:#0e1115;border-right:1px solid var(--linha);padding:18px 12px;font-size:.84rem;color:var(--suave);display:flex;flex-direction:column;gap:4px}
+  .mock .lado span{padding:9px 12px;border-radius:8px}
   .mock .lado .on{background:rgba(255,106,26,.15);color:#ffb27d}
-  .mock .conteudo{padding:16px}
-  .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
-  .kpi{background:var(--bg2);border:1px solid var(--linha);border-radius:10px;padding:10px 12px}
-  .kpi small{display:block;color:var(--suave);font-size:.66rem;text-transform:uppercase;letter-spacing:.06em}
-  .kpi b{font-size:1.25rem}
-  .lin{display:flex;align-items:center;gap:10px;padding:9px 10px;border:1px solid var(--linha);border-radius:9px;margin-bottom:7px;font-size:.74rem;background:var(--bg2)}
-  .lin .n{font-weight:700;color:#fff;min-width:46px}
+  .mock .conteudo{padding:22px}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+  .kpi{background:var(--bg2);border:1px solid var(--linha);border-radius:12px;padding:14px 16px}
+  .kpi small{display:block;color:var(--suave);font-size:.7rem;text-transform:uppercase;letter-spacing:.08em}
+  .kpi b{font:800 1.6rem var(--fh)}
+  .lin{display:flex;align-items:center;gap:14px;padding:12px 14px;border:1px solid var(--linha);border-radius:10px;margin-bottom:8px;font-size:.88rem;background:var(--bg2)}
+  .lin .n{font-weight:700;color:#fff;min-width:52px}
   .lin .t{color:var(--suave);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .tag{font-size:.64rem;font-weight:700;padding:3px 8px;border-radius:99px}
+  .tag{font-size:.7rem;font-weight:700;padding:4px 10px;border-radius:99px;white-space:nowrap}
   .t1{background:rgba(52,199,89,.15);color:#6ee08c}.t2{background:rgba(255,149,0,.16);color:#ffb340}.t3{background:rgba(10,132,255,.16);color:#6cb2ff}
-  .aviso-mock{font-size:.72rem;color:var(--suave);margin-top:10px;text-align:center}
-  /* seções */
-  section{padding:76px 0}
-  section.alt{background:var(--bg2);border-block:1px solid var(--linha)}
-  .tit{max-width:640px;margin:0 0 40px}
-  .tit .ov{color:var(--laranja);font-weight:700;font-size:.8rem;letter-spacing:.14em;text-transform:uppercase}
-  .tit h2{font-size:clamp(1.6rem,3vw,2.3rem);line-height:1.15;margin:8px 0 10px;letter-spacing:-.015em}
-  .tit p{color:var(--suave);margin:0}
-  .grade{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-  .rec{background:var(--card);border:1px solid var(--linha);border-radius:var(--raio);padding:22px;transition:.2s}
-  .rec:hover{border-color:#3a414c;transform:translateY(-2px)}
-  .ico{width:42px;height:42px;border-radius:11px;background:rgba(255,106,26,.12);color:var(--laranja);display:grid;place-items:center;margin-bottom:14px}
-  .ico svg{width:22px;height:22px}
-  .rec h3{margin:0 0 6px;font-size:1.05rem}
-  .rec p{margin:0;color:var(--suave);font-size:.94rem}
-  /* fluxo */
-  .fluxo{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;counter-reset:p}
-  .passo{position:relative;background:var(--card);border:1px solid var(--linha);border-radius:var(--raio);padding:18px 16px}
-  .passo::before{counter-increment:p;content:counter(p);display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--laranja2);color:#fff;font-weight:700;font-size:.85rem;margin-bottom:10px}
-  .passo b{display:block;margin-bottom:4px}
-  .passo span{color:var(--suave);font-size:.88rem}
-  /* plataformas */
-  .plat{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-  .pl{background:var(--card);border:1px solid var(--linha);border-radius:18px;padding:30px;display:flex;flex-direction:column;gap:14px}
-  .pl h3{margin:0;font-size:1.3rem;display:flex;align-items:center;gap:10px}
-  .pl ul{margin:0;padding-left:18px;color:var(--suave)}
-  .pl .vers{font-size:.84rem;color:var(--suave)}
-  .pl .acoes{margin:6px 0 0}
-  .passos{margin:0;padding-left:20px;color:var(--suave);font-size:.93rem}
-  .passos li{margin:5px 0}
-  details{background:var(--card);border:1px solid var(--linha);border-radius:12px;padding:16px 20px;margin-bottom:10px}
-  summary{cursor:pointer;font-weight:600}
-  details p{color:var(--suave);margin:10px 0 0}
+  .aviso-mock{font-size:.8rem;color:#6d7682;margin-top:16px;text-align:center}
+
+  /* download */
+  #download{overflow:hidden;isolation:isolate}
+  #download .px{position:absolute;inset:-15% 0;z-index:-2;background:url(img/faiscas.webp) center/cover;will-change:transform}
+  #download::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,var(--bg) 0%,rgba(11,13,16,.86) 25%,rgba(11,13,16,.9) 75%,var(--bg) 100%)}
+  .plat{display:grid;grid-template-columns:1fr 1fr;gap:clamp(14px,2vw,24px);margin-top:56px}
+  .pl{background:rgba(22,26,32,.72);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.12);border-radius:24px;padding:clamp(26px,3vw,42px);display:flex;flex-direction:column;gap:16px;transition:border-color .3s,transform .4s var(--ease)}
+  .pl:hover{transform:translateY(-4px)}
+  .pl .cab{display:flex;align-items:center;gap:16px}
+  .pl .cab .ico{margin:0;width:56px;height:56px;border-radius:16px}
+  .pl .cab .ico svg{width:28px;height:28px}
+  .pl h3{font-size:1.7rem}
+  .pl .vers{font-size:.88rem;color:var(--suave)}
+  .pl ul{margin:0;padding:0;list-style:none;color:#cdd3db;display:grid;gap:8px}
+  .pl li{display:flex;gap:10px;align-items:flex-start}
+  .pl li::before{content:"";flex:none;width:18px;height:18px;margin-top:3px;border-radius:50%;background:rgba(255,106,26,.16) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ff6a1a' stroke-width='3'%3E%3Cpath d='M6 12l4 4 8-8'/%3E%3C/svg%3E") center/12px no-repeat}
+  .pl .btn{align-self:flex-start;margin-top:6px}
+  .pl ol{margin:6px 0 0;padding:18px 0 0 20px;border-top:1px solid var(--linha);color:var(--suave);font-size:.92rem}
+  .pl ol li{display:list-item;margin:6px 0}.pl ol li::before{display:none}
+  .destaque-plat{border-color:rgba(255,106,26,.6);box-shadow:0 0 0 1px rgba(255,106,26,.35),0 30px 80px rgba(255,106,26,.12)}
+  .destaque-plat .cab::after{content:"Recomendado para você";margin-left:auto;font-size:.74rem;font-weight:600;color:#ffb27d;background:rgba(255,106,26,.14);padding:6px 11px;border-radius:99px;white-space:nowrap}
   code{background:#0b0d10;border:1px solid var(--linha);padding:1px 7px;border-radius:6px;font-size:.88em}
-  footer{border-top:1px solid var(--linha);padding:34px 0;color:var(--suave);font-size:.9rem}
-  footer .wrap{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between}
-  footer img{height:28px}
-  .destaque-plat{outline:2px solid var(--laranja);outline-offset:3px}
-  @media(max-width:900px){
-    .hero .wrap,.plat{grid-template-columns:1fr}
-    .grade{grid-template-columns:1fr 1fr}.fluxo{grid-template-columns:1fr 1fr}
-    .topo nav a:not(.btn){display:none}.hero{padding-top:48px}
+  .meta{color:var(--suave);font-size:.92rem;margin-top:22px}
+
+  /* faq */
+  .faq{display:grid;grid-template-columns:.8fr 1.2fr;gap:clamp(30px,6vw,90px)}
+  details{border-bottom:1px solid var(--linha);padding:24px 0}
+  details:first-child{border-top:1px solid var(--linha)}
+  summary{cursor:pointer;font:700 1.15rem var(--fh);list-style:none;display:flex;justify-content:space-between;align-items:center;gap:20px}
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:"+";font:400 1.7rem/1 var(--fb);color:var(--laranja);transition:transform .3s var(--ease)}
+  details[open] summary::after{transform:rotate(45deg)}
+  details p{color:var(--suave);margin:12px 0 0;max-width:40em}
+
+  /* chamada final */
+  .final{position:relative;overflow:hidden;isolation:isolate;padding:clamp(90px,16vh,170px) 0;text-align:center}
+  .final .px{position:absolute;inset:-20% 0;z-index:-2;background:url(img/caminhao.webp) center/cover;will-change:transform}
+  .final::before{content:"";position:absolute;inset:-1px 0;z-index:-1;background:linear-gradient(180deg,var(--bg) 0%,rgba(11,13,16,0) 30%,rgba(11,13,16,0) 70%,var(--bg) 100%),radial-gradient(ellipse at center,rgba(11,13,16,.5),rgba(11,13,16,.9) 70%)}
+  .final h2{font-size:clamp(2.2rem,5.4vw,4.6rem);line-height:1.02;max-width:13em;margin:0 auto 22px}
+  .final .sub{margin:0 auto 36px}
+  .final .acoes{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+
+  footer{border-top:1px solid var(--linha);padding:44px 0;color:var(--suave);font-size:.88rem}
+  footer .w{display:flex;flex-wrap:wrap;gap:18px 40px;align-items:center;justify-content:space-between}
+  footer img{height:30px}
+  footer .cred{font-size:.78rem;color:#5f6874;flex-basis:100%}
+  footer .cred a{color:#7d8794}
+
+  /* animações de rolagem */
+  .rv{opacity:0;transform:translateY(46px);transition:opacity 1s var(--ease),transform 1s var(--ease);transition-delay:calc(var(--d,0) * 110ms)}
+  .rv.in{opacity:1;transform:none}
+  .rv-clip{clip-path:inset(12% 6% 12% 6% round 22px);transition:clip-path 1.3s var(--ease)}
+  .rv-clip.in{clip-path:inset(0 0 0 0 round 22px)}
+  .rv-clip img{transform:scale(1.25);transition:transform 1.6s var(--ease)}
+  .rv-clip.in img{transform:scale(1)}
+
+  @media(max-width:1000px){
+    .topo nav a:not(.btn){display:none}
+    .duo,.plat,.faq{grid-template-columns:1fr}
+    .cx,.cx.g8,.cx.g6{grid-column:span 6}.cx.alto{grid-row:span 1}
+    .numeros{grid-template-columns:repeat(2,1fr)}
+    .fluxo{grid-template-columns:1fr}.fixo{position:relative;top:0;height:52vh}
+    .passo{min-height:auto;padding:30px 0;opacity:1}
+    .mock .corpo{grid-template-columns:1fr}.mock .lado{display:none}.kpis{grid-template-columns:repeat(2,1fr)}
+    .rolar{display:none}
   }
-  @media(max-width:560px){.grade,.fluxo{grid-template-columns:1fr}.mock .corpo{grid-template-columns:1fr}.mock .lado{display:none}.btn{width:100%;justify-content:center}}
-  @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+  @media(max-width:760px){
+    .hero .bg{background-image:url(img/hero-m.webp)}
+    .hero::before{background:linear-gradient(0deg,var(--bg) 4%,rgba(8,9,12,.78) 45%,rgba(8,9,12,.5))}
+    .cx,.cx.g8,.cx.g6{grid-column:span 12}
+    .hero .acoes .btn,.final .btn{width:100%}
+    .pl .btn{align-self:stretch}
+    .destaque-plat .cab::after{display:none}
+    .painel{min-height:440px}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+    .rv,.hero .lead,.hero .acoes,.numeros{opacity:1!important;transform:none!important}
+    .hero h1 .l>span{transform:none}.rv-clip{clip-path:none}.rv-clip img{transform:none}
+  }
 </style>
 </head>
 <body>
-<header class="topo"><div class="wrap">
+<div id="prog"></div>
+<header class="topo" id="topo"><div class="w">
   <a href="#"><img class="logo" src="logo.png" alt="Engrena"></a>
   <nav>
-    <a href="#recursos">Recursos</a><a href="#fluxo">Como funciona</a><a href="#baixar">Instalação</a><a href="#faq">Dúvidas</a>
-    <a class="btn prim peq" href="#baixar">Baixar</a>
+    <a href="#solucao">Solução</a><a href="#recursos">Recursos</a><a href="#fluxo">Como funciona</a><a href="#faq">Dúvidas</a>
+    <a class="btn prim peq" href="#download">Baixar grátis</a>
   </nav>
 </div></header>
 
 <main>
-<section class="hero"><div class="wrap">
-  <div>
+<section class="hero">
+  <div class="bg" role="img" aria-label="Técnico de manutenção trabalhando em uma máquina industrial"></div>
+  <div class="w">
     <span class="selo"><i></i> Versão <b id="v-topo">—</b> · Windows e Android</span>
-    <h1>Manutenção sob controle, <em>da ordem ao indicador</em>.</h1>
-    <p class="lead">O Engrena reúne planos preventivos, ordens de serviço, estoque, compras e indicadores PCM em um só sistema. No computador para planejar, no celular para executar em campo.</p>
+    <h1><span class="l"><span>Manutenção</span></span><span class="l"><span>sob controle,</span></span><span class="l"><span><em>do plano ao campo.</em></span></span></h1>
+    <p class="lead">Planos preventivos, ordens de serviço, estoque, compras e indicadores PCM em um só sistema. No computador para planejar, no celular para executar.</p>
     <div class="acoes">
-      <a id="cta-win" class="btn prim" href="#baixar" aria-disabled="true">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M3 5.5 10.5 4.4v7.1H3zM11.6 4.2 21 3v8.5h-9.4zM3 12.5h7.5v7.1L3 18.5zM11.6 12.5H21V21l-9.4-1.3z"/></svg>
+      <a id="cta-win" class="btn prim" href="#download" aria-disabled="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M3 5.5 10.5 4.4v7.1H3zM11.6 4.2 21 3v8.5h-9.4zM3 12.5h7.5v7.1L3 18.5zM11.6 12.5H21V21l-9.4-1.3z"/></svg>
         Baixar para Windows</a>
-      <a id="cta-and" class="btn sec" href="#baixar" aria-disabled="true">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 9.5a6 6 0 0 0-11.2 0zM8 7.2a.7.7 0 1 1 0-1.4.7.7 0 0 1 0 1.4zm8 0a.7.7 0 1 1 0-1.4.7.7 0 0 1 0 1.4zM6 10.5v7a1.2 1.2 0 0 0 1.2 1.2h.8v2.6a1.1 1.1 0 0 0 2.2 0v-2.6h3.6v2.6a1.1 1.1 0 0 0 2.2 0v-2.6h.8A1.2 1.2 0 0 0 18 17.5v-7z"/></svg>
+      <a id="cta-and" class="btn sec" href="#download" aria-disabled="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 9.5a6 6 0 0 0-11.2 0zM8 7.2a.7.7 0 1 1 0-1.4.7.7 0 0 1 0 1.4zm8 0a.7.7 0 1 1 0-1.4.7.7 0 0 1 0 1.4zM6 10.5v7a1.2 1.2 0 0 0 1.2 1.2h.8v2.6a1.1 1.1 0 0 0 2.2 0v-2.6h3.6v2.6a1.1 1.1 0 0 0 2.2 0v-2.6h.8A1.2 1.2 0 0 0 18 17.5v-7z"/></svg>
         Baixar para Android</a>
     </div>
-    <p class="meta">Gratuito para uso interno · Atualização automática no Windows · <b>Dados protegidos por perfil de acesso</b></p>
+    <div class="numeros">
+      <div><b data-conta="6">0</b><span>módulos integrados</span></div>
+      <div><b data-conta="2">0</b><span>plataformas, uma conta</span></div>
+      <div><b data-conta="3">0</b><span>perfis de acesso</span></div>
+      <div><b>PDF</b><span>ordem pronta para assinar</span></div>
+    </div>
   </div>
-  <div>
-    <div class="mock" aria-hidden="true">
-      <div class="barra"><i></i><i></i><i></i></div>
+  <div class="rolar" aria-hidden="true"></div>
+</section>
+
+<div class="marquee" aria-hidden="true"><div class="trilho">
+  <span>Ordens de serviço</span><span>Planos preventivos</span><span>Backlog</span><span>Apontamento de horas</span><span>Estoque</span><span>Compras</span><span>Indicadores PCM</span><span>Eventos e alertas</span>
+  <span>Ordens de serviço</span><span>Planos preventivos</span><span>Backlog</span><span>Apontamento de horas</span><span>Estoque</span><span>Compras</span><span>Indicadores PCM</span><span>Eventos e alertas</span>
+</div></div>
+
+<section id="solucao" class="bloco"><div class="w">
+  <span class="ov rv">A solução</span>
+  <h2 class="h2 rv" style="--d:1">Do escritório de PCM<br>ao chão de fábrica, <em>sem papel perdido.</em></h2>
+  <p class="sub rv" style="--d:2">Quem planeja e quem executa trabalham sobre a mesma ordem, em tempo real. Cada hora, peça e confirmação fica registrada no histórico do equipamento.</p>
+  <div class="duo">
+    <div class="painel rv-clip">
+      <img src="img/planejamento.webp" alt="Engenheiros planejando a manutenção na área" loading="lazy">
+      <span class="rot">No computador</span>
+      <div>
+        <h3>Planejamento e controle</h3>
+        <p>Monte planos preventivos, programe a semana, acompanhe backlog, custos e compras com a visão completa da planta.</p>
+        <div class="chips"><span>Planos</span><span>Programação</span><span>Indicadores</span><span>Relatórios</span></div>
+      </div>
+    </div>
+    <div class="painel rv-clip" style="transition-delay:.15s">
+      <img src="img/campo.webp" alt="Técnico em campo consultando a ordem de serviço" loading="lazy">
+      <span class="rot">No celular</span>
+      <div>
+        <h3>Execução em campo</h3>
+        <p>O técnico recebe a ordem, confirma cada operação, aponta horas e materiais e registra eventos direto do equipamento.</p>
+        <div class="chips"><span>Ordens</span><span>Horas</span><span>Materiais</span><span>Alertas</span></div>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<section id="recursos" class="bloco" style="padding-top:0"><div class="w">
+  <span class="ov rv">Recursos</span>
+  <h2 class="h2 rv" style="--d:1">Tudo o que a manutenção precisa,<br><em>em um só lugar.</em></h2>
+  <p class="sub rv" style="--d:2">Feito a partir da rotina real de uma planta industrial, do planejamento à execução e ao custo.</p>
+  <div class="bento">
+    <div class="cx f g8 alto rv"><img src="img/solda.webp" alt="Soldador realizando reparo" loading="lazy">
+      <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3 8-8M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg></div>
+      <h3>Ordens de serviço completas</h3><p>Confirmação operação por operação, status do sistema e do usuário, encerramento técnico e PDF da ordem pronto para assinatura.</p></div>
+    <div class="cx rv" style="--d:1"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg></div>
+      <h3>Planos preventivos</h3><p>Periodicidade por tempo ou horímetro. O plano gera a ordem com todas as atividades.</p></div>
+    <div class="cx rv" style="--d:2"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+      <h3>Apontamento de horas</h3><p>Horas por colaborador e custo da mão de obra somados à ordem automaticamente.</p></div>
+    <div class="cx rv"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8 12 3 3 8v8l9 5 9-5zM3 8l9 5 9-5M12 13v8"/></svg></div>
+      <h3>Estoque de materiais</h3><p>Reserva, retirada e devolução ligadas à ordem, com saldo e custo médio atualizados.</p></div>
+    <div class="cx f g8 rv" style="--d:1"><img src="img/eletrica.webp" alt="Eletricista inspecionando um painel" loading="lazy">
+      <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 2 21h20zM12 9v5M12 17.5v.5"/></svg></div>
+      <h3>Eventos e alertas</h3><p>Falhas registradas no ato, com equipamento, criticidade e foto. Ninguém fica sabendo tarde demais.</p></div>
+    <div class="cx g6 rv"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M2 3h3l2.7 12.4a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.5L21 8H6"/></svg></div>
+      <h3>Compras</h3><p>Requisições e acompanhamento até o recebimento, com alerta de item parado.</p></div>
+    <div class="cx f g6 rv" style="--d:1"><img src="img/tablet.webp" alt="Indicadores de manutenção em um tablet" loading="lazy">
+      <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18M7 15l4-4 3 3 5-6"/></svg></div>
+      <h3>Indicadores PCM</h3><p>Preventiva x corretiva, backlog, atraso e custo por equipamento, prontos para a reunião.</p></div>
+  </div>
+</div></section>
+
+<section class="banda">
+  <div class="px" data-px="0.25" style="background-image:url(img/mina.webp)"></div>
+  <div class="w">
+    <span class="ov rv">Feito para a operação</span>
+    <blockquote class="rv" style="--d:1;margin-top:18px">Equipamento parado custa caro.<br><em>Planejamento custa menos.</em></blockquote>
+    <p class="sub rv" style="--d:2">Mineração, siderurgia, alimentos, utilidades: onde houver um ativo crítico, o Engrena organiza quem faz o quê, quando e com qual material.</p>
+  </div>
+</section>
+
+<section id="fluxo" class="bloco"><div class="w">
+  <span class="ov rv">Como funciona</span>
+  <h2 class="h2 rv" style="--d:1">Um fluxo claro,<br><em>do plano ao fechamento.</em></h2>
+  <div class="fluxo">
+    <div class="fixo" aria-hidden="true">
+      <img class="on" src="img/planejamento.webp" alt="" loading="lazy">
+      <img src="img/tablet.webp" alt="" loading="lazy">
+      <img src="img/campo.webp" alt="" loading="lazy">
+      <img src="img/eletrica.webp" alt="" loading="lazy">
+      <img src="img/hero-m.webp" alt="" loading="lazy">
+      <div class="etq"><small id="etq-n">Etapa 1</small><span id="etq-t">Plano</span></div>
+    </div>
+    <div class="passos">
+      <div class="linha-on" id="linha-on"></div>
+      <div class="passo on"><span class="n">1</span><h3>Plano</h3><p>Defina as atividades, a frequência e o equipamento. O Engrena calcula as próximas datas sozinho.</p></div>
+      <div class="passo"><span class="n">2</span><h3>Ordem</h3><p>Gerada pelo plano, com todas as atividades como operações, materiais e ferramental já preenchidos.</p></div>
+      <div class="passo"><span class="n">3</span><h3>Execução</h3><p>O técnico confirma cada operação no celular ou no PC e aponta horas e materiais usados.</p></div>
+      <div class="passo"><span class="n">4</span><h3>Encerramento</h3><p>A ordem só fecha com todas as operações confirmadas. Sem pendência escondida.</p></div>
+      <div class="passo"><span class="n">5</span><h3>Indicadores</h3><p>Custo, horas e histórico por equipamento alimentam os indicadores PCM automaticamente.</p></div>
+    </div>
+  </div>
+</div></section>
+
+<section class="bloco" style="padding-top:0"><div class="w">
+  <span class="ov rv">O sistema</span>
+  <h2 class="h2 rv" style="--d:1">Simples de usar. <em>Completo onde importa.</em></h2>
+  <div class="vitrine">
+    <div class="mock" id="mock" aria-hidden="true">
+      <div class="barra"><i></i><i></i><i></i><img src="logo.png" alt=""></div>
       <div class="corpo">
-        <div class="lado"><span class="on">Ordens</span><span>Planos</span><span>Backlog</span><span>Materiais</span><span>Compras</span><span>Indicadores</span></div>
+        <div class="lado"><span class="on">Ordens</span><span>Planos</span><span>Backlog</span><span>Materiais</span><span>Compras</span><span>Eventos</span><span>Indicadores</span></div>
         <div class="conteudo">
           <div class="kpis">
             <div class="kpi"><small>Abertas</small><b>24</b></div>
             <div class="kpi"><small>Em execução</small><b>9</b></div>
             <div class="kpi"><small>Preventiva</small><b>82%</b></div>
+            <div class="kpi"><small>Backlog</small><b>3,5 d</b></div>
           </div>
           <div class="lin"><span class="n">#164</span><span class="t">Abrir bomba de polpa para inspeção</span><span class="tag t1">Concluída</span></div>
           <div class="lin"><span class="n">#165</span><span class="t">Inspeção de transportador de correia</span><span class="tag t2">Em execução</span></div>
           <div class="lin"><span class="n">#171</span><span class="t">Lubrificação programada do mancal</span><span class="tag t3">Liberada</span></div>
           <div class="lin"><span class="n">#172</span><span class="t">Troca de rolamento do alimentador</span><span class="tag t3">Liberada</span></div>
+          <div class="lin"><span class="n">#173</span><span class="t">Calibração de instrumentos da britagem</span><span class="tag t3">Liberada</span></div>
         </div>
       </div>
     </div>
@@ -159,84 +399,82 @@
   </div>
 </div></section>
 
-<section id="recursos"><div class="wrap">
-  <div class="tit"><span class="ov">Recursos</span><h2>Tudo o que a manutenção precisa, sem planilha solta</h2><p>Feito a partir da rotina real de uma planta industrial: do planejamento à execução e ao custo.</p></div>
-  <div class="grade">
-    <div class="rec"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg></div><h3>Planos preventivos</h3><p>Periodicidade por tempo ou horímetro. O plano gera a ordem com todas as atividades, uma por vez.</p></div>
-    <div class="rec"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3 8-8M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg></div><h3>Ordens e execução</h3><p>Confirmação operação por operação, status de sistema e do usuário, e encerramento técnico da ordem.</p></div>
-    <div class="rec"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><h3>Apontamento de horas</h3><p>Horas por colaborador e custo da mão de obra somados à ordem automaticamente.</p></div>
-    <div class="rec"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8 12 3 3 8v8l9 5 9-5zM3 8l9 5 9-5M12 13v8"/></svg></div><h3>Estoque de materiais</h3><p>Reserva, retirada e devolução ligadas à ordem, com saldo e custo médio sempre atualizados.</p></div>
-    <div class="rec"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M2 3h3l2.7 12.4a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.5L21 8H6"/></svg></div><h3>Compras</h3><p>Requisições e acompanhamento até o recebimento, com alerta de item parado.</p></div>
-    <div class="rec"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18M7 15l4-4 3 3 5-6"/></svg></div><h3>Indicadores PCM</h3><p>Preventiva x corretiva, backlog, atraso e custo por equipamento, prontos para a reunião de PCM.</p></div>
-  </div>
-</div></section>
-
-<section id="fluxo" class="alt"><div class="wrap">
-  <div class="tit"><span class="ov">Como funciona</span><h2>Um fluxo claro, do plano ao fechamento</h2><p>Inspirado nos processos de ERPs de manutenção, sem a complexidade deles.</p></div>
-  <div class="fluxo">
-    <div class="passo"><b>Plano</b><span>Define atividades, frequência e equipamento.</span></div>
-    <div class="passo"><b>Ordem</b><span>Gerada pelo plano, com todas as atividades como operações.</span></div>
-    <div class="passo"><b>Execução</b><span>O técnico confirma cada operação, no celular ou no PC.</span></div>
-    <div class="passo"><b>Encerramento</b><span>Só com todas as operações confirmadas.</span></div>
-    <div class="passo"><b>Indicadores</b><span>Custo, horas e histórico por equipamento.</span></div>
-  </div>
-</div></section>
-
-<section id="baixar"><div class="wrap">
-  <div class="tit"><span class="ov">Download</span><h2>Instale o Engrena</h2><p>Use a mesma conta no computador e no celular. Tudo fica sincronizado.</p></div>
-  <div class="plat">
-    <div class="pl" id="pl-win">
-      <h3>Windows</h3>
-      <div class="vers">Windows 10 ou 11 · 64 bits · <span id="v-win">—</span></div>
-      <ul><li>Cadastros, planos, compras, indicadores e relatórios</li><li>Atualização automática em segundo plano</li><li>Ordem de serviço em PDF</li></ul>
-      <div class="acoes">
-        <a id="baixar" class="btn prim" href="#" aria-disabled="true">Baixar instalador</a>
-        <a id="portatil" class="btn sec" href="#" aria-disabled="true">Versão portátil (.zip)</a>
+<section id="download" class="bloco">
+  <div class="px" data-px="0.2"></div>
+  <div class="w">
+    <span class="ov rv">Download</span>
+    <h2 class="h2 rv" style="--d:1">Instale o Engrena <em>agora.</em></h2>
+    <p class="sub rv" style="--d:2">Use a mesma conta no computador e no celular. Tudo fica sincronizado.</p>
+    <div class="plat">
+      <div class="pl rv" id="pl-win">
+        <div class="cab"><div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M3 5.5 10.5 4.4v7.1H3zM11.6 4.2 21 3v8.5h-9.4zM3 12.5h7.5v7.1L3 18.5zM11.6 12.5H21V21l-9.4-1.3z"/></svg></div>
+          <div><h3>Windows</h3><div class="vers">Windows 10 ou 11 · 64 bits · <span id="v-win">—</span></div></div></div>
+        <ul><li>Cadastros, planos, compras, indicadores e relatórios</li><li>Atualização automática em segundo plano</li><li>Ordem de serviço em PDF</li></ul>
+        <a id="btn-win" class="btn prim" href="#" aria-disabled="true">Baixar instalador</a>
+        <ol>
+          <li>Abra o <code>Engrena-Setup.exe</code>. Se o Windows avisar que “protegeu o computador”, clique em <em>Mais informações</em> e em <em>Executar assim mesmo</em>.</li>
+          <li>Avance no assistente. Não precisa ser administrador.</li>
+          <li>Entre com seu e-mail e senha. No primeiro acesso, use “solicitar acesso” e aguarde a aprovação.</li>
+        </ol>
       </div>
-      <ol class="passos">
-        <li>Abra o <code>Engrena-Setup.exe</code>. Se o Windows avisar “protegeu o computador”, clique em <em>Mais informações</em> e <em>Executar assim mesmo</em>.</li>
-        <li>Avance no assistente. Não precisa ser administrador.</li>
-        <li>Entre com seu e-mail e senha. No primeiro acesso, use “solicitar acesso” e aguarde a aprovação.</li>
-      </ol>
+      <div class="pl rv" id="pl-and" style="--d:1">
+        <div class="cab"><div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 9.5a6 6 0 0 0-11.2 0zM8 7.2a.7.7 0 1 1 0-1.4.7.7 0 0 1 0 1.4zm8 0a.7.7 0 1 1 0-1.4.7.7 0 0 1 0 1.4zM6 10.5v7a1.2 1.2 0 0 0 1.2 1.2h.8v2.6a1.1 1.1 0 0 0 2.2 0v-2.6h3.6v2.6a1.1 1.1 0 0 0 2.2 0v-2.6h.8A1.2 1.2 0 0 0 18 17.5v-7z"/></svg></div>
+          <div><h3>Android</h3><div class="vers">Android 7 ou superior · <span id="v-and">—</span></div></div></div>
+        <ul><li>Modo campo: ordens, execução, horas e materiais</li><li>Eventos e alertas na palma da mão</li><li>Tela pensada para uso com uma mão</li></ul>
+        <a id="baixar-apk" class="btn prim" href="#" aria-disabled="true">Baixar APK</a>
+        <ol>
+          <li>Abra esta página no celular e baixe o arquivo.</li>
+          <li>Se o Android pedir, permita instalar de “fontes desconhecidas” para o navegador.</li>
+          <li>Toque em <em>Instalar</em> e entre com a mesma conta do computador.</li>
+        </ol>
+      </div>
     </div>
-    <div class="pl" id="pl-and">
-      <h3>Android</h3>
-      <div class="vers">Android 7 ou superior · <span id="v-and">—</span></div>
-      <ul><li>Modo campo: ordens, execução, horas e materiais</li><li>Eventos e alertas na palma da mão</li><li>Tela pensada para uso com uma mão</li></ul>
-      <div class="acoes"><a id="baixar-apk" class="btn prim" href="#" aria-disabled="true">Baixar APK</a></div>
-      <ol class="passos">
-        <li>Abra esta página no celular e baixe o arquivo.</li>
-        <li>Se o Android pedir, permita instalar de “fontes desconhecidas” para o navegador.</li>
-        <li>Toque em <em>Instalar</em> e entre com a mesma conta do computador.</li>
-      </ol>
-    </div>
+    <p class="meta" id="notas"></p>
+    <p class="meta" id="erro" hidden>Não foi possível consultar a versão mais recente. Tente novamente em instantes.</p>
   </div>
-  <p class="meta" id="notas" style="margin-top:18px"></p>
-  <p class="meta" id="erro" hidden>Não foi possível consultar a versão mais recente. Tente novamente em instantes.</p>
+</section>
+
+<section id="faq" class="bloco"><div class="w faq">
+  <div><span class="ov rv">Dúvidas</span><h2 class="h2 rv" style="--d:1">Perguntas<br><em>frequentes.</em></h2></div>
+  <div class="rv" style="--d:1">
+    <details><summary>Esqueci minha senha. E agora?</summary><p>Na tela de login do aplicativo, toque em <b>Esqueci minha senha</b>, informe seu e-mail e siga o link que você receber.</p></details>
+    <details><summary>Preciso de aprovação para entrar?</summary><p>Sim. Quem solicita acesso fica aguardando até um gerente da área aprovar. Isso mantém os dados da planta protegidos.</p></details>
+    <details><summary>Funciona no iPhone?</summary><p>Ainda não. Por enquanto o Engrena está disponível para Windows e Android.</p></details>
+    <details><summary>Como atualizo o aplicativo?</summary><p>No Windows a atualização é automática: ao abrir, o app avisa quando há versão nova. No Android, use <b>Mais → Verificar atualização</b>.</p></details>
+    <details><summary>Como desinstalar?</summary><p>No Windows: Configurações → Aplicativos → Engrena → Desinstalar. No Android, segure o ícone e escolha Desinstalar.</p></details>
+  </div>
 </div></section>
 
-<section id="faq" class="alt"><div class="wrap">
-  <div class="tit"><span class="ov">Dúvidas</span><h2>Perguntas frequentes</h2></div>
-  <details><summary>Esqueci minha senha. E agora?</summary><p>Na tela de login do aplicativo, toque em <b>Esqueci minha senha</b>, informe seu e-mail e siga o link que você receber.</p></details>
-  <details><summary>Preciso de aprovação para entrar?</summary><p>Sim. Quem solicita acesso fica aguardando até um gerente da área aprovar. Isso mantém os dados da planta protegidos.</p></details>
-  <details><summary>Funciona no iPhone?</summary><p>Ainda não. Por enquanto o Engrena está disponível para Windows e Android.</p></details>
-  <details><summary>Como atualizo o aplicativo?</summary><p>No Windows a atualização é automática: ao abrir, o app avisa quando há versão nova. No Android, use <b>Mais → Verificar atualização</b>.</p></details>
-  <details><summary>Como desinstalar?</summary><p>No Windows: Configurações → Aplicativos → Engrena → Desinstalar. No Android, segure o ícone e escolha Desinstalar.</p></details>
-</div></section>
+<section class="final">
+  <div class="px" data-px="0.22"></div>
+  <div class="w">
+    <h2 class="rv">Coloque a manutenção <span style="color:var(--laranja);white-space:nowrap">para girar.</span></h2>
+    <p class="sub rv" style="--d:1">Instale em minutos e comece com o seu cadastro de equipamentos.</p>
+    <div class="acoes rv" style="--d:2"><a class="btn prim" href="#download">Baixar o Engrena</a></div>
+  </div>
+</section>
 </main>
 
-<footer><div class="wrap">
+<footer><div class="w">
   <img src="logo.png" alt="Engrena">
-  <span>© <span id="ano"></span> Engrena. Sistema de gestão e manutenção.</span>
+  <span>© <span id="ano"></span> Engrena · Gestão e planejamento da manutenção</span>
+  <span class="cred">Fotos: <a href="https://unsplash.com/?utm_source=engrena&utm_medium=referral" rel="noopener" target="_blank">Unsplash</a> (licença Unsplash).</span>
 </div></footer>
 
 <script>
   // Link de "nova senha" do Supabase cai aqui (Site URL): repassa para a tela de nova senha.
   if (/type=recovery|access_token=/.test(location.hash)) location.replace("reset.html" + location.hash);
   document.getElementById("ano").textContent = new Date().getFullYear();
-  const ua = navigator.userAgent;
-  const android = /Android/i.test(ua);
+  const android = /Android/i.test(navigator.userAgent);
   document.getElementById(android ? "pl-and" : "pl-win").classList.add("destaque-plat");
+  if (android) {
+    // No celular, o Android vem primeiro e ganha o botão principal.
+    document.getElementById("pl-and").style.order = -1;
+    const w = document.getElementById("cta-win"), a = document.getElementById("cta-and");
+    w.classList.replace("prim", "sec"); a.classList.replace("sec", "prim"); a.after(w);
+  }
+
+  // Versão e links de download a partir do manifesto publicado pelo CI.
   const MANIFESTO = "https://fdhkcbsazgidnmkxspwg.supabase.co/storage/v1/object/public/app-updates/latest.json";
   const set = (id, href) => { const a = document.getElementById(id); a.href = href; a.removeAttribute("aria-disabled"); };
   (async () => {
@@ -246,13 +484,90 @@
       const m = await r.json();
       const win = m.installer || m.url;
       const apk = m.apk ? m.apk.replace(/Engrena-Campo-[\d.]+\.apk$/, "Engrena-Campo.apk") : null;
-      set("baixar", win); set("portatil", m.url); set("cta-win", win);
+      set("btn-win", win); set("cta-win", win);
       if (apk) { set("baixar-apk", apk); set("cta-and", apk); }
-      else { document.getElementById("baixar-apk").textContent = "Em breve"; document.getElementById("cta-and").textContent = "Android em breve"; }
+      else { document.getElementById("baixar-apk").textContent = "Em breve"; document.getElementById("cta-and").lastChild.textContent = " Android em breve"; }
       ["v-topo", "v-win", "v-and"].forEach(i => document.getElementById(i).textContent = m.version);
       if (m.notes) document.getElementById("notas").textContent = "Novidades da versão " + m.version + ": " + m.notes;
     } catch (e) { document.getElementById("erro").hidden = false; }
   })();
+
+  // ---------- interações de rolagem ----------
+  const calmo = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // Revelar ao entrar na tela
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { threshold: .15, rootMargin: "0px 0px -6% 0px" });
+  document.querySelectorAll(".rv,.rv-clip").forEach(el => io.observe(el));
+
+  // Contadores do topo
+  document.querySelectorAll("[data-conta]").forEach(el => {
+    const alvo = +el.dataset.conta;
+    if (calmo) { el.textContent = alvo; return; }
+    const t0 = performance.now() + 900;
+    const passo = t => { const p = Math.min(1, Math.max(0, (t - t0) / 1200)); el.textContent = Math.round(alvo * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(passo); };
+    requestAnimationFrame(passo);
+  });
+
+  // Brilho que segue o mouse nos cartões
+  document.querySelectorAll(".cx").forEach(c => c.addEventListener("pointermove", e => {
+    const r = c.getBoundingClientRect();
+    c.style.setProperty("--mx", (e.clientX - r.left) + "px"); c.style.setProperty("--my", (e.clientY - r.top) + "px");
+  }));
+
+  const topo = document.getElementById("topo"), prog = document.getElementById("prog");
+  const pxs = [...document.querySelectorAll(".px")], heroBg = document.querySelector(".hero .bg");
+  const paineis = [...document.querySelectorAll(".painel img")];
+  const mock = document.getElementById("mock");
+  const passos = [...document.querySelectorAll(".passo")], fotos = [...document.querySelectorAll(".fixo img")];
+  const linhaOn = document.getElementById("linha-on"), caixaPassos = document.querySelector(".passos");
+  const etqN = document.getElementById("etq-n"), etqT = document.getElementById("etq-t");
+  let atual = 0, pendente = false;
+
+  function quadro() {
+    pendente = false;
+    const y = scrollY, vh = innerHeight, doc = document.documentElement.scrollHeight - vh;
+    topo.classList.toggle("solido", y > 40);
+    prog.style.transform = "scaleX(" + (doc > 0 ? y / doc : 0) + ")";
+    if (calmo) return;
+
+    if (y < vh) heroBg.style.translate = "0 " + (y * .3) + "px";
+    pxs.forEach(el => {
+      const r = el.parentElement.getBoundingClientRect();
+      if (r.bottom < 0 || r.top > vh) return;
+      const k = +(el.dataset.px || .2), folga = (el.offsetHeight - r.height) / 2 - 2;
+      const d = Math.max(-folga, Math.min(folga, (r.top + r.height / 2 - vh / 2) * -k));
+      el.style.transform = "translate3d(0," + d + "px,0)";
+    });
+    paineis.forEach(img => {
+      const r = img.parentElement.getBoundingClientRect();
+      if (r.bottom < 0 || r.top > vh) return;
+      img.style.translate = "0 " + (((r.top + r.height / 2) / vh - .5) * -60 - 30) + "px";
+    });
+
+    // Vitrine: o mock "deita" e endireita conforme entra na tela
+    const rm = mock.getBoundingClientRect();
+    const p = Math.min(1, Math.max(0, (vh - rm.top) / (vh * .75)));
+    mock.style.transform = "rotateX(" + (18 * (1 - p)) + "deg) scale(" + (.92 + .08 * p) + ")";
+
+    // Fluxo: etapa ativa + linha de progresso + foto fixa
+    if (innerWidth > 1000) {
+      let ativo = 0;
+      passos.forEach((s, i) => { const r = s.getBoundingClientRect(); if (r.top + r.height / 2 < vh * .6) ativo = i; });
+      if (ativo !== atual) {
+        passos.forEach((s, i) => s.classList.toggle("on", i <= ativo));
+        fotos.forEach((f, i) => f.classList.toggle("on", i === ativo));
+        etqN.textContent = "Etapa " + (ativo + 1); etqT.textContent = passos[ativo].querySelector("h3").textContent;
+        atual = ativo;
+      }
+      const rc = caixaPassos.getBoundingClientRect();
+      const h = Math.min(rc.height - 24, Math.max(0, vh * .6 - rc.top));
+      linhaOn.style.height = h + "px";
+    }
+  }
+  const pedir = () => { if (!pendente) { pendente = true; requestAnimationFrame(quadro); } };
+  addEventListener("scroll", pedir, { passive: true });
+  addEventListener("resize", pedir);
+  quadro();
 </script>
 </body>
 </html>
