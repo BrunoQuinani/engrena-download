@@ -46,7 +46,18 @@
     </section>
 
     <section class="card">
-      <h2>Como instalar</h2>
+      <h2>Android (celular)</h2>
+      <p><a id="baixar-apk" class="botao" aria-disabled="true" href="#">Baixar app para Android (.apk)</a></p>
+      <ol>
+        <li>Abra este link no celular e baixe o arquivo <code>.apk</code>.</li>
+        <li>Ao abrir, o Android pede para permitir a instalação de “fontes desconhecidas” para o navegador: autorize só para este app.</li>
+        <li>Toque em <em>Instalar</em> e entre com o mesmo e-mail e senha do computador.</li>
+      </ol>
+      <p class="nota">Versão de campo: ordens, confirmação de execução, horas, material, eventos e alertas. Para atualizar, use “Mais → Verificar atualização” no app.</p>
+    </section>
+
+    <section class="card">
+      <h2>Como instalar no Windows</h2>
       <ol>
         <li>Baixe e abra o <code>SIMAP-Setup.exe</code>. Se o Windows mostrar “O Windows protegeu o computador”, clique em <em>Mais informações</em> e depois em <em>Executar assim mesmo</em>.</li>
         <li>Avance no assistente. Não é preciso ser administrador: o SIMAP é instalado só para o seu usuário, com atalho na Área de Trabalho e no menu Iniciar.</li>
@@ -78,6 +89,9 @@
         a.href = m.installer || m.url;
         a.removeAttribute("aria-disabled");
         document.getElementById("portatil").href = m.url;
+        const apk = document.getElementById("baixar-apk");
+        if (m.apk) { apk.href = m.apk.replace(/SIMAP-Campo-[\d.]+\.apk$/, "SIMAP-Campo.apk"); apk.removeAttribute("aria-disabled"); }
+        else apk.textContent = "Android: em breve";
         document.getElementById("versao").textContent = "versão " + m.version;
         if (m.notes) document.getElementById("notas").textContent = "Novidades: " + m.notes;
       } catch (e) {
