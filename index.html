@@ -1,105 +1,258 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8">
-  <link rel="icon" type="image/png" href="favicon.png">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Engrena - Download</title>
-  <meta name="description" content="Baixe o Engrena, manutenção e planejamento para Windows e Android.">
-  <style>
-    :root { --marinho:#15171c; --destaque:#e8590c; --claro:#c9ced6; --fundo:#f2f5f8; --texto:#14212b; --card:#fff; --borda:#d6dde0; }
-    @media (prefers-color-scheme: dark) {
-      :root { --fundo:#121a22; --texto:#e8eef3; --card:#18232d; --borda:#2a3946; --claro:#7fb6e8; }
-    }
-    * { box-sizing: border-box; }
-    body { margin:0; font-family: "Segoe UI", system-ui, sans-serif; background:var(--fundo); color:var(--texto); }
-    header { background:var(--marinho); color:#fff; padding:28px 16px; }
-    header .in, main { max-width: 760px; margin: 0 auto; padding: 0 16px; }
-    h1 { margin:0 0 4px; font-size: 1.9rem; letter-spacing:.5px; }
-    header p { margin:0; color:var(--claro); }
-    main { padding-top: 24px; padding-bottom: 48px; }
-    .card { background:var(--card); border:1px solid var(--borda); border-radius:10px; padding:22px; margin-bottom:18px; }
-    .botao { display:inline-block; background:var(--destaque); color:#fff; text-decoration:none; padding:13px 26px; border-radius:6px; font-weight:600; font-size:1.05rem; }
-    .botao[aria-disabled="true"] { opacity:.5; pointer-events:none; }
-    .versao { color:var(--claro); margin-left:12px; }
-    ol { padding-left: 20px; line-height: 1.7; }
-    code { background:rgba(127,127,127,.18); padding:1px 6px; border-radius:4px; }
-    small, .nota { opacity:.75; }
-    h2 { margin-top:0; font-size:1.15rem; }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Engrena — Sistema de gestão e manutenção</title>
+<meta name="description" content="Engrena: planejamento e controle da manutenção industrial. Planos, ordens, estoque, compras e indicadores PCM no computador e no celular.">
+<meta name="theme-color" content="#0e1013">
+<link rel="icon" type="image/png" href="favicon.png">
+<meta property="og:title" content="Engrena — Sistema de gestão e manutenção">
+<meta property="og:description" content="Planos, ordens, estoque, compras e indicadores de manutenção. Para Windows e Android.">
+<meta property="og:image" content="logo.png">
+<style>
+  :root{
+    --bg:#0e1013; --bg2:#14171c; --card:#191d23; --linha:#262b33; --texto:#eef1f5; --suave:#a3acb9;
+    --laranja:#ff6a1a; --laranja2:#e8590c; --prata:#c9ced6; --ok:#34c759;
+    --raio:14px; --sombra:0 20px 60px rgba(0,0,0,.45);
+  }
+  *{box-sizing:border-box} html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--texto);font:16px/1.6 "Segoe UI",Inter,system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:inherit} img{max-width:100%}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+  /* topo */
+  header.topo{position:sticky;top:0;z-index:20;background:rgba(14,16,19,.82);backdrop-filter:blur(10px);border-bottom:1px solid var(--linha)}
+  .topo .wrap{display:flex;align-items:center;gap:24px;height:64px}
+  .topo img.logo{height:34px;width:auto}
+  .topo nav{display:flex;gap:22px;margin-left:auto;align-items:center}
+  .topo nav a{color:var(--suave);text-decoration:none;font-size:.93rem}
+  .topo nav a:hover{color:#fff}
+  .btn{display:inline-flex;align-items:center;gap:10px;padding:13px 22px;border-radius:10px;font-weight:600;text-decoration:none;border:1px solid transparent;transition:.15s;cursor:pointer;font-size:1rem}
+  .btn.prim{background:linear-gradient(180deg,var(--laranja),var(--laranja2));color:#fff;box-shadow:0 8px 24px rgba(255,106,26,.28)}
+  .btn.prim:hover{filter:brightness(1.08);transform:translateY(-1px)}
+  .btn.sec{background:transparent;border-color:#3a414c;color:var(--texto)}
+  .btn.sec:hover{border-color:var(--prata)}
+  .btn.peq{padding:9px 16px;font-size:.9rem}
+  .btn[aria-disabled="true"]{opacity:.5;pointer-events:none}
+  /* hero */
+  .hero{position:relative;overflow:hidden;padding:84px 0 70px;background:
+    radial-gradient(900px 420px at 80% -10%,rgba(255,106,26,.16),transparent 60%),
+    radial-gradient(700px 380px at 0% 0%,rgba(120,140,170,.10),transparent 60%)}
+  .hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
+  .selo{display:inline-flex;gap:8px;align-items:center;font-size:.82rem;color:var(--prata);border:1px solid var(--linha);background:var(--bg2);padding:6px 12px;border-radius:99px}
+  .selo i{width:8px;height:8px;border-radius:50%;background:var(--ok);display:inline-block}
+  h1{font-size:clamp(2.1rem,4.6vw,3.5rem);line-height:1.08;margin:18px 0 16px;letter-spacing:-.02em}
+  h1 em{font-style:normal;background:linear-gradient(90deg,var(--laranja),#ffa35c);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero p.lead{color:var(--suave);font-size:1.12rem;max-width:34em}
+  .acoes{display:flex;flex-wrap:wrap;gap:12px;margin:28px 0 14px}
+  .meta{color:var(--suave);font-size:.88rem}
+  .meta b{color:var(--prata);font-weight:600}
+  /* mock do sistema */
+  .mock{background:var(--card);border:1px solid var(--linha);border-radius:16px;box-shadow:var(--sombra);overflow:hidden}
+  .mock .barra{display:flex;gap:6px;padding:11px 14px;background:#101318;border-bottom:1px solid var(--linha)}
+  .mock .barra i{width:10px;height:10px;border-radius:50%;background:#2a3038}
+  .mock .corpo{display:grid;grid-template-columns:120px 1fr;min-height:300px}
+  .mock .lado{background:#101318;border-right:1px solid var(--linha);padding:14px 10px;font-size:.72rem;color:var(--suave);display:flex;flex-direction:column;gap:7px}
+  .mock .lado span{padding:6px 8px;border-radius:6px}
+  .mock .lado .on{background:rgba(255,106,26,.15);color:#ffb27d}
+  .mock .conteudo{padding:16px}
+  .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+  .kpi{background:var(--bg2);border:1px solid var(--linha);border-radius:10px;padding:10px 12px}
+  .kpi small{display:block;color:var(--suave);font-size:.66rem;text-transform:uppercase;letter-spacing:.06em}
+  .kpi b{font-size:1.25rem}
+  .lin{display:flex;align-items:center;gap:10px;padding:9px 10px;border:1px solid var(--linha);border-radius:9px;margin-bottom:7px;font-size:.74rem;background:var(--bg2)}
+  .lin .n{font-weight:700;color:#fff;min-width:46px}
+  .lin .t{color:var(--suave);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tag{font-size:.64rem;font-weight:700;padding:3px 8px;border-radius:99px}
+  .t1{background:rgba(52,199,89,.15);color:#6ee08c}.t2{background:rgba(255,149,0,.16);color:#ffb340}.t3{background:rgba(10,132,255,.16);color:#6cb2ff}
+  .aviso-mock{font-size:.72rem;color:var(--suave);margin-top:10px;text-align:center}
+  /* seções */
+  section{padding:76px 0}
+  section.alt{background:var(--bg2);border-block:1px solid var(--linha)}
+  .tit{max-width:640px;margin:0 0 40px}
+  .tit .ov{color:var(--laranja);font-weight:700;font-size:.8rem;letter-spacing:.14em;text-transform:uppercase}
+  .tit h2{font-size:clamp(1.6rem,3vw,2.3rem);line-height:1.15;margin:8px 0 10px;letter-spacing:-.015em}
+  .tit p{color:var(--suave);margin:0}
+  .grade{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .rec{background:var(--card);border:1px solid var(--linha);border-radius:var(--raio);padding:22px;transition:.2s}
+  .rec:hover{border-color:#3a414c;transform:translateY(-2px)}
+  .ico{width:42px;height:42px;border-radius:11px;background:rgba(255,106,26,.12);color:var(--laranja);display:grid;place-items:center;margin-bottom:14px}
+  .ico svg{width:22px;height:22px}
+  .rec h3{margin:0 0 6px;font-size:1.05rem}
+  .rec p{margin:0;color:var(--suave);font-size:.94rem}
+  /* fluxo */
+  .fluxo{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;counter-reset:p}
+  .passo{position:relative;background:var(--card);border:1px solid var(--linha);border-radius:var(--raio);padding:18px 16px}
+  .passo::before{counter-increment:p;content:counter(p);display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--laranja2);color:#fff;font-weight:700;font-size:.85rem;margin-bottom:10px}
+  .passo b{display:block;margin-bottom:4px}
+  .passo span{color:var(--suave);font-size:.88rem}
+  /* plataformas */
+  .plat{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .pl{background:var(--card);border:1px solid var(--linha);border-radius:18px;padding:30px;display:flex;flex-direction:column;gap:14px}
+  .pl h3{margin:0;font-size:1.3rem;display:flex;align-items:center;gap:10px}
+  .pl ul{margin:0;padding-left:18px;color:var(--suave)}
+  .pl .vers{font-size:.84rem;color:var(--suave)}
+  .pl .acoes{margin:6px 0 0}
+  .passos{margin:0;padding-left:20px;color:var(--suave);font-size:.93rem}
+  .passos li{margin:5px 0}
+  details{background:var(--card);border:1px solid var(--linha);border-radius:12px;padding:16px 20px;margin-bottom:10px}
+  summary{cursor:pointer;font-weight:600}
+  details p{color:var(--suave);margin:10px 0 0}
+  code{background:#0b0d10;border:1px solid var(--linha);padding:1px 7px;border-radius:6px;font-size:.88em}
+  footer{border-top:1px solid var(--linha);padding:34px 0;color:var(--suave);font-size:.9rem}
+  footer .wrap{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between}
+  footer img{height:28px}
+  .destaque-plat{outline:2px solid var(--laranja);outline-offset:3px}
+  @media(max-width:900px){
+    .hero .wrap,.plat{grid-template-columns:1fr}
+    .grade{grid-template-columns:1fr 1fr}.fluxo{grid-template-columns:1fr 1fr}
+    .topo nav a:not(.btn){display:none}.hero{padding-top:48px}
+  }
+  @media(max-width:560px){.grade,.fluxo{grid-template-columns:1fr}.mock .corpo{grid-template-columns:1fr}.mock .lado{display:none}.btn{width:100%;justify-content:center}}
+  @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
 </head>
 <body>
-  <header><div class="in">
-    <img src="logo.png" alt="Engrena" style="height:72px;width:auto;display:block;margin-bottom:8px">
-    <p>Manutenção e Planejamento — Windows e Android</p>
-  </div></header>
+<header class="topo"><div class="wrap">
+  <a href="#"><img class="logo" src="logo.png" alt="Engrena"></a>
+  <nav>
+    <a href="#recursos">Recursos</a><a href="#fluxo">Como funciona</a><a href="#baixar">Instalação</a><a href="#faq">Dúvidas</a>
+    <a class="btn prim peq" href="#baixar">Baixar</a>
+  </nav>
+</div></header>
 
-  <main>
-    <section class="card">
-      <h2>Baixar</h2>
-      <p>
-        <a id="baixar" class="botao" aria-disabled="true" href="#">Baixar instalador para Windows</a>
-        <span id="versao" class="versao"></span>
-      </p>
-      <p class="nota">Prefere sem instalar? <a id="portatil" href="#">Baixe a versão portátil (.zip)</a>.</p>
-      <p id="notas" class="nota"></p>
-      <p id="erro" class="nota" hidden>Não foi possível consultar a versão mais recente. Tente novamente em instantes.</p>
-    </section>
+<main>
+<section class="hero"><div class="wrap">
+  <div>
+    <span class="selo"><i></i> Versão <b id="v-topo">—</b> · Windows e Android</span>
+    <h1>Manutenção sob controle, <em>da ordem ao indicador</em>.</h1>
+    <p class="lead">O Engrena reúne planos preventivos, ordens de serviço, estoque, compras e indicadores PCM em um só sistema. No computador para planejar, no celular para executar em campo.</p>
+    <div class="acoes">
+      <a id="cta-win" class="btn prim" href="#baixar" aria-disabled="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M3 5.5 10.5 4.4v7.1H3zM11.6 4.2 21 3v8.5h-9.4zM3 12.5h7.5v7.1L3 18.5zM11.6 12.5H21V21l-9.4-1.3z"/></svg>
+        Baixar para Windows</a>
+      <a id="cta-and" class="btn sec" href="#baixar" aria-disabled="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 9.5a6 6 0 0 0-11.2 0zM8 7.2a.7.7 0 1 1 0-1.4.7.7 0 0 1 0 1.4zm8 0a.7.7 0 1 1 0-1.4.7.7 0 0 1 0 1.4zM6 10.5v7a1.2 1.2 0 0 0 1.2 1.2h.8v2.6a1.1 1.1 0 0 0 2.2 0v-2.6h3.6v2.6a1.1 1.1 0 0 0 2.2 0v-2.6h.8A1.2 1.2 0 0 0 18 17.5v-7z"/></svg>
+        Baixar para Android</a>
+    </div>
+    <p class="meta">Gratuito para uso interno · Atualização automática no Windows · <b>Dados protegidos por perfil de acesso</b></p>
+  </div>
+  <div>
+    <div class="mock" aria-hidden="true">
+      <div class="barra"><i></i><i></i><i></i></div>
+      <div class="corpo">
+        <div class="lado"><span class="on">Ordens</span><span>Planos</span><span>Backlog</span><span>Materiais</span><span>Compras</span><span>Indicadores</span></div>
+        <div class="conteudo">
+          <div class="kpis">
+            <div class="kpi"><small>Abertas</small><b>24</b></div>
+            <div class="kpi"><small>Em execução</small><b>9</b></div>
+            <div class="kpi"><small>Preventiva</small><b>82%</b></div>
+          </div>
+          <div class="lin"><span class="n">#164</span><span class="t">Abrir bomba de polpa para inspeção</span><span class="tag t1">Concluída</span></div>
+          <div class="lin"><span class="n">#165</span><span class="t">Inspeção de transportador de correia</span><span class="tag t2">Em execução</span></div>
+          <div class="lin"><span class="n">#171</span><span class="t">Lubrificação programada do mancal</span><span class="tag t3">Liberada</span></div>
+          <div class="lin"><span class="n">#172</span><span class="t">Troca de rolamento do alimentador</span><span class="tag t3">Liberada</span></div>
+        </div>
+      </div>
+    </div>
+    <p class="aviso-mock">Ilustração do sistema com dados de exemplo.</p>
+  </div>
+</div></section>
 
-    <section class="card">
-      <h2>Android (celular)</h2>
-      <p><a id="baixar-apk" class="botao" aria-disabled="true" href="#">Baixar app para Android (.apk)</a></p>
-      <ol>
-        <li>Abra este link no celular e baixe o arquivo <code>.apk</code>.</li>
-        <li>Ao abrir, o Android pede para permitir a instalação de “fontes desconhecidas” para o navegador: autorize só para este app.</li>
-        <li>Toque em <em>Instalar</em> e entre com o mesmo e-mail e senha do computador.</li>
+<section id="recursos"><div class="wrap">
+  <div class="tit"><span class="ov">Recursos</span><h2>Tudo o que a manutenção precisa, sem planilha solta</h2><p>Feito a partir da rotina real de uma planta industrial: do planejamento à execução e ao custo.</p></div>
+  <div class="grade">
+    <div class="rec"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg></div><h3>Planos preventivos</h3><p>Periodicidade por tempo ou horímetro. O plano gera a ordem com todas as atividades, uma por vez.</p></div>
+    <div class="rec"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3 8-8M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg></div><h3>Ordens e execução</h3><p>Confirmação operação por operação, status de sistema e do usuário, e encerramento técnico da ordem.</p></div>
+    <div class="rec"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><h3>Apontamento de horas</h3><p>Horas por colaborador e custo da mão de obra somados à ordem automaticamente.</p></div>
+    <div class="rec"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8 12 3 3 8v8l9 5 9-5zM3 8l9 5 9-5M12 13v8"/></svg></div><h3>Estoque de materiais</h3><p>Reserva, retirada e devolução ligadas à ordem, com saldo e custo médio sempre atualizados.</p></div>
+    <div class="rec"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M2 3h3l2.7 12.4a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.5L21 8H6"/></svg></div><h3>Compras</h3><p>Requisições e acompanhamento até o recebimento, com alerta de item parado.</p></div>
+    <div class="rec"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18M7 15l4-4 3 3 5-6"/></svg></div><h3>Indicadores PCM</h3><p>Preventiva x corretiva, backlog, atraso e custo por equipamento, prontos para a reunião de PCM.</p></div>
+  </div>
+</div></section>
+
+<section id="fluxo" class="alt"><div class="wrap">
+  <div class="tit"><span class="ov">Como funciona</span><h2>Um fluxo claro, do plano ao fechamento</h2><p>Inspirado nos processos de ERPs de manutenção, sem a complexidade deles.</p></div>
+  <div class="fluxo">
+    <div class="passo"><b>Plano</b><span>Define atividades, frequência e equipamento.</span></div>
+    <div class="passo"><b>Ordem</b><span>Gerada pelo plano, com todas as atividades como operações.</span></div>
+    <div class="passo"><b>Execução</b><span>O técnico confirma cada operação, no celular ou no PC.</span></div>
+    <div class="passo"><b>Encerramento</b><span>Só com todas as operações confirmadas.</span></div>
+    <div class="passo"><b>Indicadores</b><span>Custo, horas e histórico por equipamento.</span></div>
+  </div>
+</div></section>
+
+<section id="baixar"><div class="wrap">
+  <div class="tit"><span class="ov">Download</span><h2>Instale o Engrena</h2><p>Use a mesma conta no computador e no celular. Tudo fica sincronizado.</p></div>
+  <div class="plat">
+    <div class="pl" id="pl-win">
+      <h3>Windows</h3>
+      <div class="vers">Windows 10 ou 11 · 64 bits · <span id="v-win">—</span></div>
+      <ul><li>Cadastros, planos, compras, indicadores e relatórios</li><li>Atualização automática em segundo plano</li><li>Ordem de serviço em PDF</li></ul>
+      <div class="acoes">
+        <a id="baixar" class="btn prim" href="#" aria-disabled="true">Baixar instalador</a>
+        <a id="portatil" class="btn sec" href="#" aria-disabled="true">Versão portátil (.zip)</a>
+      </div>
+      <ol class="passos">
+        <li>Abra o <code>Engrena-Setup.exe</code>. Se o Windows avisar “protegeu o computador”, clique em <em>Mais informações</em> e <em>Executar assim mesmo</em>.</li>
+        <li>Avance no assistente. Não precisa ser administrador.</li>
+        <li>Entre com seu e-mail e senha. No primeiro acesso, use “solicitar acesso” e aguarde a aprovação.</li>
       </ol>
-      <p class="nota">Versão de campo: ordens, confirmação de execução, horas, material, eventos e alertas. Para atualizar, use “Mais → Verificar atualização” no app.</p>
-    </section>
-
-    <section class="card">
-      <h2>Como instalar no Windows</h2>
-      <ol>
-        <li>Baixe e abra o <code>Engrena-Setup.exe</code>. Se o Windows mostrar “O Windows protegeu o computador”, clique em <em>Mais informações</em> e depois em <em>Executar assim mesmo</em>.</li>
-        <li>Avance no assistente. Não é preciso ser administrador: o Engrena é instalado só para o seu usuário, com atalho na Área de Trabalho e no menu Iniciar.</li>
-        <li>Para desinstalar: Configurações do Windows → Aplicativos → Engrena → Desinstalar (ou “Desinstalar Engrena” no menu Iniciar).</li>
-        <li>Entre com seu e-mail e senha. No primeiro acesso, use “solicitar acesso” e aguarde um gerente aprovar.</li>
+    </div>
+    <div class="pl" id="pl-and">
+      <h3>Android</h3>
+      <div class="vers">Android 7 ou superior · <span id="v-and">—</span></div>
+      <ul><li>Modo campo: ordens, execução, horas e materiais</li><li>Eventos e alertas na palma da mão</li><li>Tela pensada para uso com uma mão</li></ul>
+      <div class="acoes"><a id="baixar-apk" class="btn prim" href="#" aria-disabled="true">Baixar APK</a></div>
+      <ol class="passos">
+        <li>Abra esta página no celular e baixe o arquivo.</li>
+        <li>Se o Android pedir, permita instalar de “fontes desconhecidas” para o navegador.</li>
+        <li>Toque em <em>Instalar</em> e entre com a mesma conta do computador.</li>
       </ol>
-      <p class="nota">Depois de instalado, o app se atualiza sozinho: ao abrir, ele avisa quando há versão nova.</p>
-    </section>
+    </div>
+  </div>
+  <p class="meta" id="notas" style="margin-top:18px"></p>
+  <p class="meta" id="erro" hidden>Não foi possível consultar a versão mais recente. Tente novamente em instantes.</p>
+</div></section>
 
-    <section class="card">
-      <h2>Esqueci minha senha</h2>
-      <p>Na tela de login do aplicativo, clique em <strong>Esqueci minha senha</strong>, informe seu e-mail e siga o link que você receberá.</p>
-    </section>
-  </main>
+<section id="faq" class="alt"><div class="wrap">
+  <div class="tit"><span class="ov">Dúvidas</span><h2>Perguntas frequentes</h2></div>
+  <details><summary>Esqueci minha senha. E agora?</summary><p>Na tela de login do aplicativo, toque em <b>Esqueci minha senha</b>, informe seu e-mail e siga o link que você receber.</p></details>
+  <details><summary>Preciso de aprovação para entrar?</summary><p>Sim. Quem solicita acesso fica aguardando até um gerente da área aprovar. Isso mantém os dados da planta protegidos.</p></details>
+  <details><summary>Funciona no iPhone?</summary><p>Ainda não. Por enquanto o Engrena está disponível para Windows e Android.</p></details>
+  <details><summary>Como atualizo o aplicativo?</summary><p>No Windows a atualização é automática: ao abrir, o app avisa quando há versão nova. No Android, use <b>Mais → Verificar atualização</b>.</p></details>
+  <details><summary>Como desinstalar?</summary><p>No Windows: Configurações → Aplicativos → Engrena → Desinstalar. No Android, segure o ícone e escolha Desinstalar.</p></details>
+</div></section>
+</main>
 
-  <script>
-    // Link de "nova senha" enviado pelo Supabase cai aqui (Site URL): repassa para a tela de nova senha.
-    if (/type=recovery|access_token=/.test(location.hash)) {
-      location.replace("reset.html" + location.hash);
-    }
-    const MANIFESTO = "https://fdhkcbsazgidnmkxspwg.supabase.co/storage/v1/object/public/app-updates/latest.json";
-    (async () => {
-      try {
-        const r = await fetch(MANIFESTO + "?t=" + Date.now(), { cache: "no-store" });
-        if (!r.ok) throw new Error(r.status);
-        const m = await r.json();
-        const a = document.getElementById("baixar");
-        // Versões antigas do manifesto não tinham instalador: cai no .zip.
-        a.href = m.installer || m.url;
-        a.removeAttribute("aria-disabled");
-        document.getElementById("portatil").href = m.url;
-        const apk = document.getElementById("baixar-apk");
-        if (m.apk) { apk.href = m.apk.replace(/Engrena-Campo-[\d.]+\.apk$/, "Engrena-Campo.apk"); apk.removeAttribute("aria-disabled"); }
-        else apk.textContent = "Android: em breve";
-        document.getElementById("versao").textContent = "versão " + m.version;
-        if (m.notes) document.getElementById("notas").textContent = "Novidades: " + m.notes;
-      } catch (e) {
-        document.getElementById("erro").hidden = false;
-      }
-    })();
-  </script>
+<footer><div class="wrap">
+  <img src="logo.png" alt="Engrena">
+  <span>© <span id="ano"></span> Engrena. Sistema de gestão e manutenção.</span>
+</div></footer>
+
+<script>
+  // Link de "nova senha" do Supabase cai aqui (Site URL): repassa para a tela de nova senha.
+  if (/type=recovery|access_token=/.test(location.hash)) location.replace("reset.html" + location.hash);
+  document.getElementById("ano").textContent = new Date().getFullYear();
+  const ua = navigator.userAgent;
+  const android = /Android/i.test(ua);
+  document.getElementById(android ? "pl-and" : "pl-win").classList.add("destaque-plat");
+  const MANIFESTO = "https://fdhkcbsazgidnmkxspwg.supabase.co/storage/v1/object/public/app-updates/latest.json";
+  const set = (id, href) => { const a = document.getElementById(id); a.href = href; a.removeAttribute("aria-disabled"); };
+  (async () => {
+    try {
+      const r = await fetch(MANIFESTO + "?t=" + Date.now(), { cache: "no-store" });
+      if (!r.ok) throw new Error(r.status);
+      const m = await r.json();
+      const win = m.installer || m.url;
+      const apk = m.apk ? m.apk.replace(/Engrena-Campo-[\d.]+\.apk$/, "Engrena-Campo.apk") : null;
+      set("baixar", win); set("portatil", m.url); set("cta-win", win);
+      if (apk) { set("baixar-apk", apk); set("cta-and", apk); }
+      else { document.getElementById("baixar-apk").textContent = "Em breve"; document.getElementById("cta-and").textContent = "Android em breve"; }
+      ["v-topo", "v-win", "v-and"].forEach(i => document.getElementById(i).textContent = m.version);
+      if (m.notes) document.getElementById("notas").textContent = "Novidades da versão " + m.version + ": " + m.notes;
+    } catch (e) { document.getElementById("erro").hidden = false; }
+  })();
+</script>
 </body>
 </html>
-
