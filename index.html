@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>SIMAP - Download</title>
-  <meta name="description" content="Baixe o SIMAP, Sistema Integrado de Manutenção para Windows.">
+  <title>Engrena - Download</title>
+  <meta name="description" content="Baixe o Engrena, manutenção e planejamento para Windows e Android.">
   <style>
     :root { --marinho:#0c3b5e; --destaque:#0f548c; --claro:#b4d6fa; --fundo:#f2f5f8; --texto:#14212b; --card:#fff; --borda:#d6dde0; }
     @media (prefers-color-scheme: dark) {
@@ -29,8 +29,8 @@
 </head>
 <body>
   <header><div class="in">
-    <h1>SIMAP</h1>
-    <p>Sistema Integrado de Manutenção — aplicativo para Windows</p>
+    <h1>Engrena</h1>
+    <p>Manutenção e Planejamento — Windows e Android</p>
   </div></header>
 
   <main>
@@ -60,8 +60,8 @@
       <h2>Como instalar no Windows</h2>
       <ol>
         <li>Baixe e abra o <code>SIMAP-Setup.exe</code>. Se o Windows mostrar “O Windows protegeu o computador”, clique em <em>Mais informações</em> e depois em <em>Executar assim mesmo</em>.</li>
-        <li>Avance no assistente. Não é preciso ser administrador: o SIMAP é instalado só para o seu usuário, com atalho na Área de Trabalho e no menu Iniciar.</li>
-        <li>Para desinstalar: Configurações do Windows → Aplicativos → SIMAP → Desinstalar (ou “Desinstalar SIMAP” no menu Iniciar).</li>
+        <li>Avance no assistente. Não é preciso ser administrador: o Engrena é instalado só para o seu usuário, com atalho na Área de Trabalho e no menu Iniciar.</li>
+        <li>Para desinstalar: Configurações do Windows → Aplicativos → Engrena → Desinstalar (ou “Desinstalar Engrena” no menu Iniciar).</li>
         <li>Entre com seu e-mail e senha. No primeiro acesso, use “solicitar acesso” e aguarde um gerente aprovar.</li>
       </ol>
       <p class="nota">Depois de instalado, o app se atualiza sozinho: ao abrir, ele avisa quando há versão nova.</p>
@@ -90,7 +90,7 @@
         a.removeAttribute("aria-disabled");
         document.getElementById("portatil").href = m.url;
         const apk = document.getElementById("baixar-apk");
-        if (m.apk) { apk.href = m.apk.replace(/SIMAP-Campo-[\d.]+\.apk$/, "SIMAP-Campo.apk"); apk.removeAttribute("aria-disabled"); }
+        if (m.apk) { apk.href = m.apk.replace(/Engrena-Campo-[\d.]+\.apk$/, "Engrena-Campo.apk"); apk.removeAttribute("aria-disabled"); }
         else apk.textContent = "Android: em breve";
         document.getElementById("versao").textContent = "versão " + m.version;
         if (m.notes) document.getElementById("notas").textContent = "Novidades: " + m.notes;
