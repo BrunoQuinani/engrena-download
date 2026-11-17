@@ -209,6 +209,17 @@
   .final .sub{margin:0 auto 36px}
   .final .acoes{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
 
+  /* manual do usuário (fim da página) */
+  .manual{background:var(--bg2);border-top:1px solid var(--linha);padding:clamp(40px,6vw,64px) 0}
+  .manual .w{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:24px 36px}
+  .manual .txt{display:flex;align-items:center;gap:18px;flex:1 1 360px;min-width:0}
+  .manual .ico{margin:0;flex:none}
+  .manual h3{font-size:clamp(1.25rem,2vw,1.6rem);margin:0 0 4px}
+  .manual p{margin:0;color:var(--suave);font-size:.97rem}
+  .manual .sub-m{margin-top:6px;font-size:.88rem;color:#7d8794}
+  .manual .btn{flex:none}
+  @media(max-width:760px){.manual .btn{width:100%}}
+
   footer{border-top:1px solid var(--linha);padding:44px 0;color:var(--suave);font-size:.88rem}
   footer .w{display:flex;flex-wrap:wrap;gap:18px 40px;align-items:center;justify-content:space-between}
   footer img{height:30px}
@@ -453,6 +464,19 @@
     <div class="acoes rv" style="--d:2"><a class="btn prim" href="#download">Baixar o Engrena</a></div>
   </div>
 </section>
+<section class="manual" aria-labelledby="manual-titulo">
+  <div class="w rv">
+    <div class="txt">
+      <div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h8"/></svg></div>
+      <div>
+        <h3 id="manual-titulo">Manual do usuário</h3>
+        <p>Passo a passo de todas as telas, do planejamento à execução. Em PDF, para ler no computador ou imprimir.</p>
+        <p class="sub-m" id="manual-revisao">Sempre na revisão mais recente.</p>
+      </div>
+    </div>
+    <a class="btn sec" href="https://fdhkcbsazgidnmkxspwg.supabase.co/storage/v1/object/public/app-updates/Manual_do_Usuario_Engrena.pdf?download=Manual_do_Usuario_Engrena.pdf" target="_blank" rel="noopener">Baixar manual (PDF)</a>
+  </div>
+</section>
 </main>
 
 <footer><div class="w">
@@ -490,6 +514,16 @@
       ["v-topo", "v-win", "v-and"].forEach(i => document.getElementById(i).textContent = m.version);
       if (m.notes) document.getElementById("notas").textContent = "Novidades da versão " + m.version + ": " + m.notes;
     } catch (e) { document.getElementById("erro").hidden = false; }
+  })();
+
+  // Manual do usuário: a revisão vem do JSON que o CI publica junto com o PDF.
+  (async () => {
+    try {
+      const r = await fetch("https://fdhkcbsazgidnmkxspwg.supabase.co/storage/v1/object/public/app-updates/manual-latest.json?t=" + Date.now(), { cache: "no-store" });
+      if (!r.ok) throw new Error(r.status);
+      const m = await r.json();
+      document.getElementById("manual-revisao").textContent = "Revisão " + m.revisao + " · atualizado em " + m.data_revisao + ".";
+    } catch (e) { /* sem a revisão, o botão continua funcionando */ }
   })();
 
   // ---------- interações de rolagem ----------
